@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.SociosController"
+      styleClass="modulo-contenido" spacing="14">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <Label text="👥 Socios" styleClass="modulo-titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="etiquetaInfo" styleClass="etiqueta-info"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="campoBusqueda" promptText="🔍  Buscar por nombre…"
+                   styleClass="campo-busqueda" HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="filtroEstado" prefWidth="150" styleClass="combo-filtro"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnNuevo"  text="＋ Nuevo"       styleClass="boton-primario"   onAction="#handleNuevo"/>
+        <Button fx:id="btnEditar" text="✏ Editar"       styleClass="boton-secundario" onAction="#handleEditar"/>
+        <Button fx:id="btnBaja"   text="✕ Dar de Baja"  styleClass="boton-peligro"    onAction="#handleBaja"/>
+    </HBox>
+
+    <TableView fx:id="tablaSocios" VBox.vgrow="ALWAYS"
+               styleClass="tabla-socios">
+        <placeholder>
+            <Label text="No hay socios registrados." styleClass="etiqueta-info"/>
+        </placeholder>
+        <columns>
+            <TableColumn fx:id="colNombre"      text="Nombre"     prefWidth="200"/>
+            <TableColumn fx:id="colMembresia"   text="Membresía"  prefWidth="180"/>
+            <TableColumn fx:id="colFechaInicio" text="Inicio"     prefWidth="100"/>
+            <TableColumn fx:id="colFechaFin"    text="Vence"      prefWidth="100"/>
+            <TableColumn fx:id="colEstado"      text="Estado"     prefWidth="110"/>
+            <TableColumn fx:id="colDias"        text="Días rest." prefWidth="90"/>
+        </columns>
+    </TableView>
+</VBox>

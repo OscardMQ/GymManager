@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.DashboardHomeController"
+      styleClass="modulo-contenido">
+
+    <!-- Encabezado del módulo -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <padding><Insets top="24" right="28" bottom="16" left="28"/></padding>
+        <VBox spacing="4">
+            <Label text="📊 Dashboard" styleClass="modulo-titulo"/>
+            <Label fx:id="lblMes" styleClass="etiqueta-info"/>
+        </VBox>
+    </HBox>
+
+    <Separator style="-fx-background-color: #2d3050;"/>
+
+    <!-- Área scrollable con las tarjetas KPI -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                styleClass="scroll-transparente"
+                hbarPolicy="NEVER">
+        <VBox spacing="16">
+            <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+            <!-- Fila 1: Socios activos · Vencidos · Por vencer -->
+            <HBox spacing="16">
+
+                <VBox styleClass="kpi-card, kpi-verde" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="👥" style="-fx-font-size: 20;"/>
+                        <Label text="Socios Activos" styleClass="kpi-titulo"/>
+                    </HBox>
+                    <Label fx:id="lblSociosActivos" text="—" styleClass="kpi-valor"/>
+                    <Label text="Membresías vigentes" styleClass="kpi-subtitulo"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card, kpi-rojo" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="⚠️" style="-fx-font-size: 20;"/>
+                        <Label text="Vencidas" styleClass="kpi-titulo"/>
+                    </HBox>
+                    <Label fx:id="lblVencidos" text="—" styleClass="kpi-valor"/>
+                    <Label text="Requieren renovación" styleClass="kpi-subtitulo"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card, kpi-amarillo" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="⏰" style="-fx-font-size: 20;"/>
+                        <Label text="Por Vencer (7 días)" styleClass="kpi-titulo"/>
+                    </HBox>
+                    <Label fx:id="lblPorVencer" text="—" styleClass="kpi-valor"/>
+                    <Label text="Vencen esta semana" styleClass="kpi-subtitulo"/>
+                </VBox>
+
+            </HBox>
+
+            <!-- Fila 2: Ingresos del mes · Stock -->
+            <HBox spacing="16">
+
+                <VBox styleClass="kpi-card, kpi-azul" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="💰" style="-fx-font-size: 20;"/>
+                        <Label text="Ingresos del Mes" styleClass="kpi-titulo"/>
+                    </HBox>
+                    <Label fx:id="lblIngresos" text="—" styleClass="kpi-valor"/>
+                    <Label text="Pagos registrados en MXN" styleClass="kpi-subtitulo"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card, kpi-gris" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="📦" style="-fx-font-size: 20;"/>
+                        <Label text="Stock Bajo" styleClass="kpi-titulo"/>
+                    </HBox>
+                    <Label fx:id="lblStock" text="0" styleClass="kpi-valor"/>
+                    <Label text="Productos con pocas unidades" styleClass="kpi-subtitulo"/>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </ScrollPane>
+
+</VBox>

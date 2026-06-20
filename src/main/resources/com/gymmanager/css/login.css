@@ -1,0 +1,112 @@
+/* ============================================================
+   login.css — Estilos exclusivos del formulario de acceso.
+   Paleta: fondo #0f1117, tarjeta #1a1d2e, acento #ff6b35
+   ============================================================ */
+
+/* Fondo oscuro que cubre toda la ventana */
+.login-root {
+    -fx-background-color: #0f1117;
+}
+
+/* Tarjeta central del formulario */
+.login-card {
+    -fx-background-color: #1a1d2e;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 32, 0, 0, 10);
+}
+
+/* Emoji de cabecera */
+.login-icono {
+    -fx-font-size: 46px;
+}
+
+/* Nombre del sistema */
+.login-titulo {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.login-subtitulo {
+    -fx-text-fill: #8b8fa8;
+    -fx-font-size: 13px;
+}
+
+/* Línea divisoria */
+.login-separador {
+    -fx-background-color: #2d3050;
+    -fx-border-color: #2d3050;
+}
+
+/* Etiqueta flotante sobre cada campo */
+.campo-etiqueta {
+    -fx-text-fill: #8b8fa8;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+/* TextField y PasswordField */
+.campo-texto {
+    -fx-background-color: #252836;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #4a4f6a;
+    -fx-border-color: #2d3050;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 14px;
+    -fx-pref-height: 44px;
+    -fx-padding: 0 14 0 14;
+}
+
+.campo-texto:focused {
+    -fx-border-color: #ff6b35;
+    -fx-border-width: 2;
+    -fx-background-color: #2a2d40;
+}
+
+/* Caja de error */
+.error-etiqueta {
+    -fx-text-fill: #ff4757;
+    -fx-font-size: 13px;
+    -fx-padding: 8 12 8 12;
+    -fx-background-color: rgba(255, 71, 87, 0.12);
+    -fx-background-radius: 6;
+    -fx-border-color: rgba(255, 71, 87, 0.3);
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+}
+
+/* Botón principal */
+.boton-login {
+    -fx-background-color: #ff6b35;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 46px;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-letter-spacing: 1;
+}
+
+.boton-login:hover {
+    -fx-background-color: #ff8455;
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 53, 0.4), 12, 0, 0, 2);
+}
+
+.boton-login:pressed {
+    -fx-background-color: #e55a25;
+    -fx-effect: none;
+}
+
+.boton-login:disabled {
+    -fx-background-color: #3a3d55;
+    -fx-text-fill: #6b6f8a;
+    -fx-cursor: default;
+}
+
+/* Versión al pie */
+.version-etiqueta {
+    -fx-text-fill: #3d4060;
+    -fx-font-size: 11px;
+    -fx-padding: 6 0 0 0;
+}

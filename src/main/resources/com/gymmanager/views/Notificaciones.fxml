@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.NotificacionesController"
+      styleClass="contenido-panel"
+      spacing="16">
+
+    <!-- ── Encabezado ─────────────────────────────────────────────────────── -->
+    <Label text="🔔 Notificaciones WhatsApp" styleClass="titulo-seccion"/>
+
+    <!-- ── Configuración CallMeBot ────────────────────────────────────────── -->
+    <VBox styleClass="card-panel" spacing="14">
+
+        <Label text="Configuración CallMeBot" styleClass="subtitulo"/>
+
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="170" prefWidth="170"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="420"/>
+            </columnConstraints>
+
+            <Label text="Número del dueño:"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"
+                   styleClass="form-label"/>
+            <TextField fx:id="txtNumeroDueno"
+                       GridPane.columnIndex="1" GridPane.rowIndex="0"
+                       promptText="529831234567  (sin + ni espacios)"/>
+
+            <Label text="API Key CallMeBot:"
+                   GridPane.columnIndex="0" GridPane.rowIndex="1"
+                   styleClass="form-label"/>
+            <TextField fx:id="txtApiKey"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"
+                       promptText="Tu token de CallMeBot"/>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="💾  Guardar configuración"
+                    onAction="#guardarConfiguracion"
+                    styleClass="btn-primario"/>
+            <Button text="📤  Probar envío"
+                    onAction="#probarEnvio"
+                    styleClass="btn-secundario"/>
+        </HBox>
+
+        <!-- Mensaje de estado de las operaciones de configuración -->
+        <Label fx:id="lblEstadoConfig" text=" "/>
+
+    </VBox>
+
+    <!-- ── Historial de notificaciones ────────────────────────────────────── -->
+    <VBox styleClass="card-panel" spacing="10" VBox.vgrow="ALWAYS">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Label text="Historial (últimos 30 días)" styleClass="subtitulo"/>
+            <Button text="↻" onAction="#refrescarHistorial" styleClass="btn-icono"/>
+        </HBox>
+
+        <Label fx:id="lblConteoHistorial" text=" " styleClass="texto-secundario"/>
+
+        <TableView fx:id="tablaHistorial" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colFecha"   text="Fecha"   prefWidth="150"/>
+                <TableColumn fx:id="colSocio"   text="Socio"   prefWidth="155"/>
+                <TableColumn fx:id="colTipo"    text="Tipo"    prefWidth="130"/>
+                <TableColumn fx:id="colEstado"  text="Estado"  prefWidth="110"/>
+                <TableColumn fx:id="colMensaje" text="Mensaje" prefWidth="340"/>
+            </columns>
+            <placeholder>
+                <Label text="Sin notificaciones en los últimos 30 días"
+                       styleClass="texto-secundario"/>
+            </placeholder>
+        </TableView>
+
+    </VBox>
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+</VBox>

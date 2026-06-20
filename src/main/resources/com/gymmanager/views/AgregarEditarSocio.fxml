@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.AgregarEditarSocioController"
+      styleClass="modal-contenido" spacing="16">
+    <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+    <Label fx:id="etiquetaTitulo" text="Nuevo Socio" styleClass="modal-titulo"/>
+    <Separator styleClass="modal-separador"/>
+
+    <VBox spacing="4">
+        <Label text="Nombre completo *" styleClass="campo-etiqueta"/>
+        <TextField fx:id="campoNombre" promptText="Nombre del socio" styleClass="campo-texto"/>
+    </VBox>
+
+    <HBox spacing="12">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Teléfono" styleClass="campo-etiqueta"/>
+            <TextField fx:id="campoTelefono" promptText="55 1234 5678" styleClass="campo-texto"/>
+        </VBox>
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="WhatsApp" styleClass="campo-etiqueta"/>
+            <TextField fx:id="campoWhatsapp" promptText="55 1234 5678" styleClass="campo-texto"/>
+        </VBox>
+    </HBox>
+
+    <VBox spacing="4">
+        <Label text="Membresía *" styleClass="campo-etiqueta"/>
+        <ComboBox fx:id="comboMembresia" maxWidth="Infinity"
+                  promptText="Selecciona membresía" styleClass="campo-texto"/>
+    </VBox>
+
+    <Label fx:id="etiquetaPrecio" styleClass="etiqueta-precio"/>
+
+    <HBox spacing="12">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Fecha de inicio *" styleClass="campo-etiqueta"/>
+            <DatePicker fx:id="fechaInicio" maxWidth="Infinity" styleClass="campo-texto"/>
+        </VBox>
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Fecha de vencimiento" styleClass="campo-etiqueta"/>
+            <TextField fx:id="campoFechaFin" editable="false"
+                       promptText="Se calcula automáticamente"
+                       styleClass="campo-texto campo-readonly"/>
+        </VBox>
+    </HBox>
+
+    <Label fx:id="etiquetaError" styleClass="error-etiqueta"
+           wrapText="true" visible="false" managed="false"/>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCancelar" text="Cancelar" styleClass="boton-secundario" onAction="#handleCancelar"/>
+        <Button fx:id="btnGuardar"  text="Guardar"  styleClass="boton-primario"   onAction="#handleGuardar" defaultButton="true"/>
+    </HBox>
+</VBox>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gymmanager.controllers.DashboardController"
+            styleClass="dashboard-root">
+
+    <top>
+        <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="0" right="20" bottom="0" left="20"/></padding>
+            <Label text="💪 GymManager" styleClass="topbar-logo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER_RIGHT">
+                <Label fx:id="lblNombreUsuario" styleClass="topbar-usuario"/>
+                <Label fx:id="lblRol"           styleClass="topbar-rol"/>
+            </VBox>
+            <Button fx:id="btnCerrarSesion" text="Cerrar sesión"
+                    styleClass="boton-logout" onAction="#cerrarSesion"/>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox styleClass="menu-lateral" spacing="4">
+            <padding><Insets top="16" right="0" bottom="16" left="0"/></padding>
+            <Button fx:id="btnMenuDashboard"      text="📊  Dashboard"      styleClass="menu-item" maxWidth="Infinity" onAction="#menuDashboard"/>
+            <Button fx:id="btnMenuSocios"         text="👥  Socios"         styleClass="menu-item" maxWidth="Infinity" onAction="#menuSocios"/>
+            <Button fx:id="btnMenuMembresias"     text="🏷  Membresías"     styleClass="menu-item" maxWidth="Infinity" onAction="#menuMembresias"/>
+            <Button fx:id="btnMenuBitacora"       text="📋  Bitácora"       styleClass="menu-item" maxWidth="Infinity" onAction="#menuBitacora"/>
+            <Button fx:id="btnMenuNotificaciones" text="🔔  Notificaciones" styleClass="menu-item" maxWidth="Infinity" onAction="#menuNotificaciones"/>
+        </VBox>
+    </left>
+
+    <center>
+        <AnchorPane fx:id="contentArea" styleClass="dashboard-contenido"/>
+    </center>
+
+</BorderPane>
