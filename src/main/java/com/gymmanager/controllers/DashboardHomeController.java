@@ -1,5 +1,5 @@
 package com.gymmanager.controllers;
-
+import com.gymmanager.services.ProductoService;
 import com.gymmanager.services.PagoService;
 import com.gymmanager.services.SocioService;
 import javafx.fxml.FXML;
@@ -22,6 +22,7 @@ public class DashboardHomeController {
     @FXML private Label lblIngresos;
     @FXML private Label lblStock;
     @FXML private Label lblMes;
+    @FXML private Label lblKpiStockBajo;
 
     /**
      * Carga todos los KPIs desde los servicios.
@@ -61,6 +62,13 @@ public class DashboardHomeController {
         } catch (SQLException e) {
             lblIngresos.setText("—");
         }
+
+        int stockBajo = ProductoService.getInstance().listarStockBajo().size();
+        lblKpiStockBajo.setText(String.valueOf(stockBajo));
+// Colorear en ámbar si hay productos con stock bajo
+        lblKpiStockBajo.setStyle(stockBajo > 0
+                ? "-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"
+                : "-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #16a34a;");
 
         // Stock preparado para Fase 7 — siempre 0 por ahora
         lblStock.setText("0");

@@ -114,6 +114,27 @@ public class DashboardController {
         }
     }
 
+    // a) Campo junto a btnMenuEmpleados:
+    @FXML private Button btnMenuProductos;
+
+// b) En configurarMenuPorRol() — Productos es visible para AMBOS roles.
+//    No agregar a la lista de botones ocultos para RECEPCIONISTA.
+
+    // c) Método de navegación:
+    @FXML
+    private void menuProductos() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gymmanager/views/productos.fxml"));
+            Parent vista = loader.load();
+            ProductosController ctrl = loader.getController();
+            ctrl.inicializar(usuarioActual);            // ajusta al nombre de tu campo de sesión
+            colocarEnContentArea(vista);
+        } catch (IOException e) {
+            System.err.println("Error cargando módulo productos: " + e.getMessage());
+        }
+    }
+
     // ── Carga de vistas ───────────────────────────────────────────────────────
 
     /** Carga el home con KPIs. Los datos se refrescan cada vez que se navega al home. */

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.ProductosController"
+      style="-fx-background-color: #0f1117;"
+      spacing="0">
+
+    <stylesheets>
+        <URL value="@../css/estilos.css"/>
+    </stylesheets>
+
+    <!-- Encabezado -->
+    <VBox style="-fx-background-color: #1a1d2e; -fx-padding: 24 28 20 28;">
+        <Label text="Productos e Inventario"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label fx:id="lblConteo" styleClass="texto-secundario" text="Cargando..."/>
+            <Label fx:id="lblAlertaStock" visible="false" managed="false"
+                   style="-fx-text-fill: #f59e0b; -fx-font-size: 12px;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Barra de acciones -->
+    <HBox alignment="CENTER_LEFT" spacing="10"
+          style="-fx-padding: 16 28 8 28; -fx-background-color: #0f1117;">
+        <Button text="＋ Nuevo Producto" onAction="#nuevoProducto"
+                style="-fx-background-color: #ff6b35; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-background-radius: 6;
+                       -fx-padding: 8 20; -fx-cursor: hand;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="txtBuscar"
+                   promptText="🔍  Buscar por nombre o categoría..."
+                   prefWidth="290"
+                   style="-fx-background-color: #1a1d2e; -fx-text-fill: white;
+                          -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                          -fx-background-radius: 6; -fx-padding: 8 12;
+                          -fx-prompt-text-fill: #4a4d5e;"/>
+        <Button fx:id="btnEditar" text="✏  Editar" onAction="#editarProducto"
+                style="-fx-background-color: #2a2d3e; -fx-text-fill: #8b8fa8;
+                       -fx-background-radius: 6; -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Button fx:id="btnEliminar" text="🗑  Eliminar" onAction="#eliminarProducto"
+                style="-fx-background-color: #2a2d3e; -fx-text-fill: #dc2626;
+                       -fx-background-radius: 6; -fx-padding: 8 18; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Tabla -->
+    <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: transparent;
+                      -fx-table-cell-border-color: transparent;">
+        <VBox.margin><Insets top="0" right="20" bottom="20" left="20"/></VBox.margin>
+        <columns>
+            <TableColumn fx:id="colNombre"    text="Nombre"    prefWidth="220"/>
+            <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="130"/>
+            <TableColumn fx:id="colPrecio"    text="Precio"    prefWidth="100"/>
+            <TableColumn fx:id="colStock"     text="Stock"     prefWidth="75"/>
+            <TableColumn fx:id="colStockMin"  text="Mínimo"    prefWidth="75"/>
+            <TableColumn fx:id="colEstado"    text="Estado"    prefWidth="110"/>
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.AgregarEditarProductoController"
+      style="-fx-background-color: #1a1d2e;"
+      spacing="0" prefWidth="460">
+
+    <!-- Encabezado -->
+    <VBox style="-fx-background-color: #0f1117; -fx-padding: 20 24 16 24;">
+        <Label fx:id="lblTitulo" text="Nuevo Producto"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+    </VBox>
+
+    <!-- Formulario -->
+    <VBox spacing="16" style="-fx-padding: 24;">
+
+        <!-- Nombre -->
+        <VBox spacing="6">
+            <Label text="Nombre *" styleClass="form-label"/>
+            <TextField fx:id="txtNombre" promptText="ej. Proteína Whey 1kg"
+                       style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                              -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                              -fx-background-radius: 6; -fx-padding: 10 12;
+                              -fx-prompt-text-fill: #4a4d5e;"/>
+        </VBox>
+
+        <!-- Categoría -->
+        <VBox spacing="6">
+            <Label text="Categoría" styleClass="form-label"/>
+            <ComboBox fx:id="cmbCategoria" maxWidth="Infinity"
+                      style="-fx-background-color: #0f1117;
+                             -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                             -fx-background-radius: 6;"/>
+        </VBox>
+
+        <!-- Precio -->
+        <VBox spacing="6">
+            <Label text="Precio ($) *" styleClass="form-label"/>
+            <TextField fx:id="txtPrecio" promptText="0.00"
+                       style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                              -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                              -fx-background-radius: 6; -fx-padding: 10 12;
+                              -fx-prompt-text-fill: #4a4d5e;"/>
+        </VBox>
+
+        <!-- Stock actual y Stock mínimo en una fila -->
+        <HBox spacing="14">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Stock actual *" styleClass="form-label"/>
+                <TextField fx:id="txtStock" promptText="0"
+                           style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                                  -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                                  -fx-background-radius: 6; -fx-padding: 10 12;
+                                  -fx-prompt-text-fill: #4a4d5e;"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Stock mínimo *" styleClass="form-label"/>
+                <TextField fx:id="txtStockMinimo" promptText="5"
+                           style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                                  -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                                  -fx-background-radius: 6; -fx-padding: 10 12;
+                                  -fx-prompt-text-fill: #4a4d5e;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Error -->
+        <Label fx:id="lblError" text="" visible="false" managed="false" wrapText="true"
+               style="-fx-text-fill: #dc2626; -fx-font-size: 12px;
+                      -fx-background-color: rgba(220,38,38,0.12);
+                      -fx-background-radius: 6; -fx-padding: 8 12;"/>
+
+        <!-- Botones -->
+        <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 4 0 0 0;">
+            <Button text="Cancelar" onAction="#cancelar"
+                    style="-fx-background-color: #2a2d3e; -fx-text-fill: #8b8fa8;
+                           -fx-background-radius: 6; -fx-padding: 10 22; -fx-cursor: hand;"/>
+            <Button fx:id="btnGuardar" text="Guardar" onAction="#guardar"
+                    style="-fx-background-color: #ff6b35; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-background-radius: 6;
+                           -fx-padding: 10 22; -fx-cursor: hand;"/>
+        </HBox>
+    </VBox>
+</VBox>

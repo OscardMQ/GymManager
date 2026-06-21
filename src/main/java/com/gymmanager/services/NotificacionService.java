@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * Orquesta la verificación de vencimientos y el envío de notificaciones WhatsApp.
@@ -43,9 +45,9 @@ public class NotificacionService {
     // ── Punto de entrada principal ────────────────────────────────────────────
 
     /**
-     * Verifica socios con vencimiento en 3 días y les envía WhatsApp.
-     * Registra cada intento en la tabla notificaciones.
-     * Se llama al iniciar la app y al navegar al Dashboard.
+     * Verifica socios con vencimiento próximo (3 días) y ya vencidos.
+     * Si un socio ya fue notificado hoy, se omite para no spam.
+     * Envía un resumen al dueño por WhatsApp.
      */
     public void verificarYNotificarVencimientos() {
         if (!ejecutando.compareAndSet(false, true)) {
@@ -54,29 +56,45 @@ public class NotificacionService {
         }
 
         try {
-            List<Socio> porVencer = socioService.listarPorVencer(3);
-            if (porVencer.isEmpty()) return;
+            // IDs de socios que ya recibieron notificación hoy → no volver a incluirlos
+            Set<Integer> yaNotificadosHoy = obtenerYaNotificadosHoy();
 
-            int enviados = 0, errores = 0;
-            StringBuilder resumen = new StringBuilder("📊 *Gen Fit* — Vencimientos en 3 días:\n");
+            List<Socio> porVencer = socioService.listarPorVencer(3).stream()
+                    .filter(s -> !yaNotificadosHoy.contains(s.getId()))
+                    .collect(Collectors.toList());
 
-            for (Socio socio : porVencer) {
-                ResultadoEnvio resultado = notificarSocio(socio);
-                if (resultado == ResultadoEnvio.ENVIADO)  enviados++;
-                if (resultado == ResultadoEnvio.ERROR)    errores++;
+            List<Socio> vencidos = socioService.listarVencidos().stream()
+                    .filter(s -> !yaNotificadosHoy.contains(s.getId()))
+                    .collect(Collectors.toList());
 
-                resumen.append(String.format("• %s — vence: %s%n",
-                        socio.getNombre(), socio.getFechaFin()));
+            if (porVencer.isEmpty() && vencidos.isEmpty()) {
+                System.out.println("[NotificacionService] Nada nuevo que notificar hoy.");
+                return;
             }
 
-            // Resumen al dueño con totales
-            String mensajeDueno = resumen
-                    + String.format("\n✅ Notificados: %d  |  ❌ Errores: %d  |  Total: %d",
-                    enviados, errores, porVencer.size());
-            notificarDueno(mensajeDueno);
+            StringBuilder resumen = new StringBuilder("📊 *Gen Fit* — Reporte de membresías:\n");
+
+            if (!porVencer.isEmpty()) {
+                resumen.append("\n⏰ *Por vencer (próximos 3 días):*\n");
+                for (Socio socio : porVencer) {
+                    notificarSocio(socio, "VENCIMIENTO");
+                    resumen.append(String.format("• %s — vence: %s%n",
+                            socio.getNombre(), socio.getFechaFin()));
+                }
+            }
+
+            if (!vencidos.isEmpty()) {
+                resumen.append("\n🔴 *Ya vencidos:*\n");
+                for (Socio socio : vencidos) {
+                    notificarSocio(socio, "VENCIDO");
+                    resumen.append(String.format("• %s — venció: %s%n",
+                            socio.getNombre(), socio.getFechaFin()));
+                }
+            }
+
+            notificarDueno(resumen.toString());
 
         } catch (Exception e) {
-            // Captura inesperada: no debe romper el arranque de la app
             System.err.println("[NotificacionService] Error inesperado: " + e.getMessage());
         } finally {
             ejecutando.set(false);
@@ -90,38 +108,40 @@ public class NotificacionService {
 
     // ── Lógica interna ────────────────────────────────────────────────────────
 
-    /** Intenta notificar a un socio y persiste el resultado. */
-    private ResultadoEnvio notificarSocio(Socio socio) {
+    /**
+     * Devuelve los IDs de socios que ya tienen una notificación registrada hoy.
+     * Usa listarRecientes(1) para no agregar métodos al DAO.
+     */
+    private Set<Integer> obtenerYaNotificadosHoy() {
+        String hoy = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        try {
+            return notificacionDAO.listarRecientes(1).stream()
+                    .filter(n -> n.getSocioId() > 0)               // excluir resúmenes del dueño
+                    .filter(n -> n.getFechaEnvio() != null
+                            && n.getFechaEnvio().startsWith(hoy)) // solo notificaciones de hoy
+                    .map(Notificacion::getSocioId)
+                    .collect(Collectors.toSet());
+        } catch (SQLException e) {
+            System.err.println("[NotificacionService] Error al leer notificaciones de hoy: " + e.getMessage());
+            return Set.of(); // si falla, proceder sin filtrar
+        }
+    }
+
+    /** Registra el socio en BD sin enviarle WhatsApp directamente. */
+    private ResultadoEnvio notificarSocio(Socio socio, String tipo) {
         String mensaje = String.format(
                 "🏋️ *Gen Fit* — Hola %s, tu membresía vence el %s. " +
                         "Pásate a renovarla para no perder tu acceso. ¡Te esperamos!",
                 socio.getNombre(), socio.getFechaFin());
 
-        Notificacion registro = crearRegistro(socio.getId(), "VENCIMIENTO", mensaje);
-
-        if (socio.getWhatsapp() == null || socio.getWhatsapp().isBlank()) {
-            registro.setEstado("SIN_WHATSAPP");
-            guardarSilencioso(registro);
-            return ResultadoEnvio.SIN_WHATSAPP;
-        }
-
-        try {
-            whatsApp.enviarAlSocio(socio, mensaje);
-            registro.setEstado("ENVIADO");
-            guardarSilencioso(registro);
-            return ResultadoEnvio.ENVIADO;
-        } catch (WhatsAppException e) {
-            // Adjunta el error al mensaje para tener contexto en el historial
-            registro.setEstado("ERROR");
-            registro.setMensaje(mensaje + " [Error: " + e.getMessage() + "]");
-            guardarSilencioso(registro);
-            System.err.println("[NotificacionService] Fallo al notificar a "
-                    + socio.getNombre() + ": " + e.getMessage());
-            return ResultadoEnvio.ERROR;
-        }
+        // Solo se registra en BD; el aviso real va al dueño vía notificarDueno()
+        Notificacion registro = crearRegistro(socio.getId(), tipo, mensaje);
+        registro.setEstado("ENVIADO");
+        guardarSilencioso(registro);
+        return ResultadoEnvio.ENVIADO;
     }
 
-    /** Envía el resumen diario al dueño y lo registra. socio_id = 0 → sistema. */
+    /** Envía el resumen al dueño y lo registra. socio_id = 0 → sistema. */
     private void notificarDueno(String mensaje) {
         Notificacion registro = crearRegistro(0, "RESUMEN_DUENO", mensaje);
         try {
@@ -129,6 +149,7 @@ public class NotificacionService {
             registro.setEstado("ENVIADO");
         } catch (WhatsAppException e) {
             registro.setEstado("ERROR");
+            registro.setMensaje(mensaje + " [Error: " + e.getMessage() + "]");
             System.err.println("[NotificacionService] No se pudo notificar al dueño: " + e.getMessage());
         }
         guardarSilencioso(registro);

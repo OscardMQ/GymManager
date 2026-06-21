@@ -104,6 +104,19 @@ public class DatabaseInitializer {
                     valor TEXT
                 )
                 """);
+
+        // Agregar dentro de inicializar(), junto a las demás tablas:
+        String sqlProductos = """
+    CREATE TABLE IF NOT EXISTS productos (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre       TEXT    NOT NULL,
+        precio       REAL    NOT NULL DEFAULT 0,
+        stock        INTEGER NOT NULL DEFAULT 0,
+        stock_minimo INTEGER NOT NULL DEFAULT 5,
+        categoria    TEXT    NOT NULL DEFAULT 'General'
+    )
+    """;
+        stmt.execute(sqlProductos);
     }
 
     private static void insertarDatosSemilla(Statement stmt) throws SQLException {

@@ -380,3 +380,21 @@
     -fx-text-fill: #8b8fa8;
     -fx-font-size: 12px;
 }
+
+/* ── Fase 7: estado de stock en tabla de productos ───────────────────────── */
+
+.table-row-cell.fila-stock-bajo {
+    -fx-background-color: rgba(245, 158, 11, 0.10);
+}
+
+.table-row-cell.fila-stock-bajo:selected {
+    -fx-background-color: rgba(245, 158, 11, 0.28);
+}
+
+.table-row-cell.fila-sin-stock {
+    -fx-background-color: rgba(220, 38, 38, 0.12);
+}
+
+.table-row-cell.fila-sin-stock:selected {
+    -fx-background-color: rgba(220, 38, 38, 0.30);
+}

@@ -13,4 +13,6 @@ public class WhatsAppException extends Exception {
     public WhatsAppException(String mensaje, Throwable causa) {
         super(mensaje, causa);
     }
+
+    
 }
