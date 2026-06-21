@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.EmpleadosController"
+      style="-fx-background-color: #0f1117;"
+      spacing="0">
+
+    <stylesheets>
+        <URL value="@../css/estilos.css"/>
+    </stylesheets>
+
+    <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
+    <VBox style="-fx-background-color: #1a1d2e; -fx-padding: 24 28 20 28;">
+        <Label text="Gestión de Empleados"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <Label fx:id="lblConteo" styleClass="texto-secundario" text="Cargando..."/>
+    </VBox>
+
+    <!-- ── Barra de acciones ───────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="10"
+          style="-fx-padding: 16 28 8 28; -fx-background-color: #0f1117;">
+        <Button text="＋ Nuevo Empleado" onAction="#nuevoEmpleado"
+                style="-fx-background-color: #ff6b35; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-background-radius: 6;
+                       -fx-padding: 8 20; -fx-cursor: hand;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnEditar" text="✏  Editar" onAction="#editarEmpleado"
+                style="-fx-background-color: #2a2d3e; -fx-text-fill: #8b8fa8;
+                       -fx-background-radius: 6; -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Button fx:id="btnToggleEstado" text="⊘ Desactivar" onAction="#toggleEstado"
+                style="-fx-background-color: #2a2d3e; -fx-text-fill: #8b8fa8;
+                       -fx-background-radius: 6; -fx-padding: 8 18; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- ── Tabla ───────────────────────────────────────────────────────────── -->
+    <TableView fx:id="tablaEmpleados" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: transparent;
+                      -fx-table-cell-border-color: transparent;">
+        <VBox.margin>
+            <Insets top="0" right="20" bottom="20" left="20"/>
+        </VBox.margin>
+        <columns>
+            <TableColumn fx:id="colUsuario" text="Usuario"   prefWidth="300"/>
+            <TableColumn fx:id="colRol"     text="Rol"       prefWidth="200"/>
+            <TableColumn fx:id="colEstado"  text="Estado"    prefWidth="160"/>
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.AgregarEditarEmpleadoController"
+      style="-fx-background-color: #1a1d2e;"
+      spacing="0" prefWidth="440">
+
+    <!-- ── Encabezado del modal ────────────────────────────────────────────── -->
+    <VBox style="-fx-background-color: #0f1117; -fx-padding: 20 24 16 24;">
+        <Label fx:id="lblTitulo" text="Nuevo Empleado"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+    </VBox>
+
+    <!-- ── Formulario ──────────────────────────────────────────────────────── -->
+    <VBox spacing="18" style="-fx-padding: 24;">
+
+        <!-- Usuario -->
+        <VBox spacing="6">
+            <Label text="Nombre de usuario *" styleClass="form-label"/>
+            <TextField fx:id="txtUsuario" promptText="ej. recepcion1"
+                       style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                              -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                              -fx-background-radius: 6; -fx-padding: 10 12;
+                              -fx-prompt-text-fill: #4a4d5e;"/>
+        </VBox>
+
+        <!-- Contraseña -->
+        <VBox spacing="6">
+            <Label text="Contraseña *" styleClass="form-label"/>
+            <PasswordField fx:id="txtContrasena" promptText="Mínimo 6 caracteres"
+                           style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                                  -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                                  -fx-background-radius: 6; -fx-padding: 10 12;
+                                  -fx-prompt-text-fill: #4a4d5e;"/>
+            <Label fx:id="lblContrasenaHint"
+                   text="Dejar en blanco para conservar la contraseña actual."
+                   visible="false"
+                   style="-fx-text-fill: #8b8fa8; -fx-font-size: 11px;"/>
+        </VBox>
+
+        <!-- Confirmar contraseña -->
+        <VBox spacing="6">
+            <Label text="Confirmar contraseña *" styleClass="form-label"/>
+            <PasswordField fx:id="txtConfirmarContrasena" promptText="Repetir contraseña"
+                           style="-fx-background-color: #0f1117; -fx-text-fill: white;
+                                  -fx-border-color: #2a2d3e; -fx-border-radius: 6;
+                                  -fx-background-radius: 6; -fx-padding: 10 12;
+                                  -fx-prompt-text-fill: #4a4d5e;"/>
+        </VBox>
+
+        <!-- Mensaje de error (oculto por defecto) -->
+        <Label fx:id="lblError" text="" visible="false" managed="false" wrapText="true"
+               style="-fx-text-fill: #dc2626; -fx-font-size: 12px;
+                      -fx-background-color: rgba(220,38,38,0.12);
+                      -fx-background-radius: 6; -fx-padding: 8 12;"/>
+
+        <!-- Botones -->
+        <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 4 0 0 0;">
+            <Button text="Cancelar" onAction="#cancelar"
+                    style="-fx-background-color: #2a2d3e; -fx-text-fill: #8b8fa8;
+                           -fx-background-radius: 6; -fx-padding: 10 22; -fx-cursor: hand;"/>
+            <Button fx:id="btnGuardar" text="Guardar" onAction="#guardar"
+                    style="-fx-background-color: #ff6b35; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-background-radius: 6;
+                           -fx-padding: 10 22; -fx-cursor: hand;"/>
+        </HBox>
+    </VBox>
+</VBox>

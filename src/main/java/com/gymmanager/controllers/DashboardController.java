@@ -5,6 +5,7 @@ import com.gymmanager.services.NotificacionService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,6 +26,7 @@ public class DashboardController {
     @FXML private Button btnMenuMembresias;        // oculto para RECEPCIONISTA
     @FXML private Button btnMenuBitacora;          // oculto para RECEPCIONISTA
     @FXML private Button btnMenuNotificaciones;    // oculto para RECEPCIONISTA (Fase 5)
+    @FXML private Button btnMenuEmpleados;         // oculto para RECEPCIONISTA (Fase 6)
 
     // ── Cabecera ──────────────────────────────────────────────────────────────
     @FXML private Label  lblNombreUsuario;
@@ -56,6 +58,7 @@ public class DashboardController {
         setVisibilidadBoton(btnMenuMembresias, esAdmin);
         setVisibilidadBoton(btnMenuBitacora, esAdmin);
         setVisibilidadBoton(btnMenuNotificaciones, esAdmin); // Fase 5
+        setVisibilidadBoton(btnMenuEmpleados, esAdmin);      // Fase 6
     }
 
     private void setVisibilidadBoton(Button btn, boolean visible) {
@@ -96,6 +99,20 @@ public class DashboardController {
         colocarEnContentArea(vbox);
     }
     @FXML private void menuNotificaciones() { cargarVista("/com/gymmanager/views/notificaciones.fxml"); }
+
+    @FXML
+    private void menuEmpleados() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gymmanager/views/empleados.fxml"));
+            Parent vista = loader.load();
+            EmpleadosController ctrl = loader.getController();
+            ctrl.inicializar(usuarioActual);
+            colocarEnContentArea(vista);
+        } catch (IOException e) {
+            System.err.println("[DashboardController] Error cargando empleados: " + e.getMessage());
+        }
+    }
 
     // ── Carga de vistas ───────────────────────────────────────────────────────
 
