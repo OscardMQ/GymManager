@@ -28,7 +28,7 @@
     <!-- Barra de acciones -->
     <HBox alignment="CENTER_LEFT" spacing="10"
           style="-fx-padding: 16 28 8 28; -fx-background-color: #0f1117;">
-        <Button text="＋ Nuevo Producto" onAction="#nuevoProducto"
+        <Button fx:id="btnNuevo" text="＋ Nuevo Producto" onAction="#nuevoProducto"
                 style="-fx-background-color: #ff6b35; -fx-text-fill: white;
                        -fx-font-weight: bold; -fx-background-radius: 6;
                        -fx-padding: 8 20; -fx-cursor: hand;"/>

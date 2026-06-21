@@ -117,6 +117,30 @@ public class DatabaseInitializer {
     )
     """;
         stmt.execute(sqlProductos);
+
+        // ── Tabla ventas: encabezado de cada venta ──
+        stmt.execute("""
+    CREATE TABLE IF NOT EXISTS ventas (
+        id      INTEGER PRIMARY KEY AUTOINCREMENT,
+        fecha   TEXT    NOT NULL,
+        hora    TEXT    NOT NULL,
+        usuario TEXT    NOT NULL,
+        total   REAL    NOT NULL DEFAULT 0
+    )
+""");
+
+// ── Tabla detalle_ventas: renglones de cada venta ──
+        stmt.execute("""
+    CREATE TABLE IF NOT EXISTS detalle_ventas (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        venta_id        INTEGER NOT NULL,
+        producto_id     INTEGER NOT NULL,
+        cantidad        INTEGER NOT NULL DEFAULT 1,
+        precio_unitario REAL    NOT NULL DEFAULT 0,
+        FOREIGN KEY (venta_id)    REFERENCES ventas(id),
+        FOREIGN KEY (producto_id) REFERENCES productos(id)
+    )
+""");
     }
 
     private static void insertarDatosSemilla(Statement stmt) throws SQLException {

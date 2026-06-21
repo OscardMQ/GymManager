@@ -5,23 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f118678f-89d7-415c-ab62-4b7e92c91aba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/AgregarEditarProductoController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/ProductosController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/dao/ProductoDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/dao/ProductoDAOImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/models/Producto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/services/ProductoService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/agregarEditarProducto.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/productos.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/VentasController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/dao/VentaDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/dao/VentaDAOImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/models/DetalleVenta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/models/Venta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/services/VentaService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/ventasPuntoVenta.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/DashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/DashboardHomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/DashboardHomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/ProductosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/controllers/ProductosController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gymmanager/database/DatabaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/database/DatabaseInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gymmanager/services/NotificacionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/services/NotificacionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gymmanager/services/WhatsAppException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gymmanager/services/WhatsAppException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/gymmanager/css/estilos.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/css/estilos.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/dashboard.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/dashboard_home.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/dashboard_home.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/productos.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/gymmanager/views/productos.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

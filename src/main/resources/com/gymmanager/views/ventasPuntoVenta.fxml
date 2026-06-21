@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gymmanager.controllers.VentasController"
+            style="-fx-background-color: #0f1117;">
+
+    <!-- ── Encabezado del módulo ── -->
+    <top>
+        <VBox style="-fx-background-color: #1a1d2e;
+                     -fx-padding: 16 20 16 20;
+                     -fx-border-color: #2a2d3e;
+                     -fx-border-width: 0 0 1 0;">
+            <Label text="🛒  Punto de Venta"
+                   style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+            <Label text="Doble clic en un producto para agregarlo al carrito."
+                   style="-fx-text-fill: #8b8fa8; -fx-font-size: 11;"/>
+        </VBox>
+    </top>
+
+    <!-- ── Contenido: catálogo (izq) + carrito (der) ── -->
+    <center>
+        <HBox style="-fx-background-color: #0f1117;">
+
+            <!-- ──────── Panel izquierdo: Catálogo ──────── -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-padding: 20; -fx-background-color: #0f1117;">
+
+                <Label text="📦  Catálogo de productos"
+                       style="-fx-text-fill: #ff6b35; -fx-font-size: 13; -fx-font-weight: bold;"/>
+
+                <TextField fx:id="txtBuscarProducto"
+                           promptText="🔍  Buscar por nombre o categoría..."
+                           style="-fx-background-color: #1a1d2e;
+                                  -fx-text-fill: white;
+                                  -fx-prompt-text-fill: #8b8fa8;
+                                  -fx-border-color: #2a2d3e;
+                                  -fx-border-radius: 4;
+                                  -fx-background-radius: 4;
+                                  -fx-padding: 8;
+                                  -fx-font-size: 13;"/>
+
+                <TableView fx:id="tblProductos" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #1a1d2e;
+                                  -fx-border-color: #2a2d3e;">
+                    <columns>
+                        <TableColumn fx:id="colProdNombre"    text="Nombre"    prefWidth="210"/>
+                        <TableColumn fx:id="colProdCategoria" text="Categoría" prefWidth="130"/>
+                        <TableColumn fx:id="colProdPrecio"    text="Precio"    prefWidth="95"/>
+                        <TableColumn fx:id="colProdStock"     text="Stock"     prefWidth="70"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Sin productos registrados."
+                               style="-fx-text-fill: #8b8fa8;"/>
+                    </placeholder>
+                </TableView>
+
+                <Button text="➕  Agregar al carrito"
+                        onAction="#agregarAlCarrito"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #ff6b35;
+                               -fx-text-fill: white;
+                               -fx-font-weight: bold;
+                               -fx-font-size: 13;
+                               -fx-padding: 10 0;
+                               -fx-cursor: hand;
+                               -fx-background-radius: 6;"/>
+            </VBox>
+
+            <!-- Separador visual entre paneles -->
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color: #2a2d3e;"/>
+
+            <!-- ──────── Panel derecho: Carrito ──────── -->
+            <VBox spacing="10" prefWidth="400" minWidth="320"
+                  style="-fx-padding: 20; -fx-background-color: #0f1117;">
+
+                <Label text="🛒  Carrito"
+                       style="-fx-text-fill: #ff6b35; -fx-font-size: 13; -fx-font-weight: bold;"/>
+
+                <TableView fx:id="tblCarrito" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #1a1d2e;
+                                  -fx-border-color: #2a2d3e;">
+                    <columns>
+                        <TableColumn fx:id="colCarNombre"   text="Producto"  prefWidth="145"/>
+                        <TableColumn fx:id="colCarCantidad" text="Cant."     prefWidth="55"/>
+                        <TableColumn fx:id="colCarPrecio"   text="P. Unit."  prefWidth="80"/>
+                        <TableColumn fx:id="colCarSubtotal" text="Subtotal"  prefWidth="95"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="El carrito está vacío."
+                               style="-fx-text-fill: #8b8fa8;"/>
+                    </placeholder>
+                </TableView>
+
+                <!-- Total destacado -->
+                <HBox alignment="CENTER_RIGHT" spacing="12"
+                      style="-fx-background-color: #1a1d2e;
+                             -fx-padding: 12 16;
+                             -fx-background-radius: 6;">
+                    <Label text="TOTAL:"
+                           style="-fx-text-fill: #8b8fa8;
+                                  -fx-font-size: 14;
+                                  -fx-font-weight: bold;"/>
+                    <Label fx:id="lblTotal" text="0.00"
+                           style="-fx-text-fill: #ff6b35;
+                                  -fx-font-size: 22;
+                                  -fx-font-weight: bold;"/>
+                </HBox>
+
+                <!-- Mensaje de error o éxito -->
+                <Label fx:id="lblMensaje" text=""
+                       wrapText="true"
+                       style="-fx-font-size: 12;"/>
+
+                <!-- Botón: Quitar ítem seleccionado del carrito -->
+                <Button text="➖  Quitar del carrito"
+                        onAction="#quitarDelCarrito"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #2a2d3e;
+                               -fx-text-fill: #8b8fa8;
+                               -fx-padding: 8;
+                               -fx-cursor: hand;
+                               -fx-background-radius: 6;"/>
+
+                <!-- Botón principal: registrar la venta -->
+                <Button text="💲  Cobrar"
+                        onAction="#cobrar"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #16a34a;
+                               -fx-text-fill: white;
+                               -fx-font-weight: bold;
+                               -fx-font-size: 15;
+                               -fx-padding: 12;
+                               -fx-cursor: hand;
+                               -fx-background-radius: 6;"/>
+
+                <!-- Botón: vaciar carrito sin cobrar -->
+                <Button text="🧹  Limpiar carrito"
+                        onAction="#limpiarCarrito"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: transparent;
+                               -fx-text-fill: #8b8fa8;
+                               -fx-padding: 8;
+                               -fx-cursor: hand;
+                               -fx-border-color: #2a2d3e;
+                               -fx-border-radius: 6;
+                               -fx-background-radius: 6;"/>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

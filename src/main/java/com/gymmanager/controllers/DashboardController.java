@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
+import com.gymmanager.controllers.VentasController;
 import java.io.IOException;
 
 /**
@@ -132,6 +132,24 @@ public class DashboardController {
             colocarEnContentArea(vista);
         } catch (IOException e) {
             System.err.println("Error cargando módulo productos: " + e.getMessage());
+        }
+    }
+
+    @FXML private Button btnMenuVentas;
+
+    /** Carga el módulo Punto de Venta en el área central del dashboard. */
+    @FXML
+    private void menuVentas() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gymmanager/views/ventasPuntoVenta.fxml")
+            );
+            Parent vista = loader.load();
+            VentasController ctrl = loader.getController();
+            ctrl.inicializar(usuarioActual);
+            colocarEnContentArea(vista);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

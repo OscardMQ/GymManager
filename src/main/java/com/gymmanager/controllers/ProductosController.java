@@ -40,6 +40,7 @@ public class ProductosController {
     @FXML private Button    btnEliminar;
     @FXML private Label     lblConteo;
     @FXML private Label     lblAlertaStock;
+    @FXML private Button btnNuevo;
 
     private final ProductoService productoService = ProductoService.getInstance();
     private final ObservableList<Producto> productos = FXCollections.observableArrayList();
@@ -129,8 +130,13 @@ public class ProductosController {
 
     /** El botón Eliminar solo es visible para ADMIN. */
     private void configurarAccesoPorRol() {
-        btnEliminar.setVisible(esAdmin());
-        btnEliminar.setManaged(esAdmin());
+        boolean esAdmin = esAdmin();
+        btnNuevo.setVisible(esAdmin);
+        btnNuevo.setManaged(esAdmin);
+        btnEditar.setVisible(esAdmin);
+        btnEditar.setManaged(esAdmin);
+        btnEliminar.setVisible(esAdmin);
+        btnEliminar.setManaged(esAdmin);
     }
 
     // ─── Carga de datos ───────────────────────────────────────────────────────
