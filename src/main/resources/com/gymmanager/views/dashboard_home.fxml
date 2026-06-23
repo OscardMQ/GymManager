@@ -56,15 +56,6 @@
                     <Label text="Vencen esta semana" styleClass="kpi-subtitulo"/>
                 </VBox>
 
-                <!-- Agregar junto a las demás tarjetas KPI existentes -->
-                <VBox style="-fx-background-color: #1a1d2e; -fx-background-radius: 10; -fx-padding: 20;"
-                      prefWidth="160" spacing="6">
-                    <Label text="Stock Bajo" styleClass="subtitulo"/>
-                    <Label fx:id="lblKpiStockBajo" text="0"
-                           style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
-                    <Label text="productos" styleClass="texto-secundario"/>
-                </VBox>
-
             </HBox>
 
             <!-- Fila 2: Ingresos del mes · Stock -->

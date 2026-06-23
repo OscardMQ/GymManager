@@ -27,6 +27,7 @@ public class DashboardController {
     @FXML private Button btnMenuBitacora;          // oculto para RECEPCIONISTA
     @FXML private Button btnMenuNotificaciones;    // oculto para RECEPCIONISTA (Fase 5)
     @FXML private Button btnMenuEmpleados;         // oculto para RECEPCIONISTA (Fase 6)
+    @FXML private Button btnMenuReportes;
 
     // ── Cabecera ──────────────────────────────────────────────────────────────
     @FXML private Label  lblNombreUsuario;
@@ -54,11 +55,13 @@ public class DashboardController {
     /** Aplica visibilidad de botones según el rol del usuario autenticado. */
     private void configurarMenuPorRol() {
         boolean esAdmin = usuarioActual.esAdmin();
-
         setVisibilidadBoton(btnMenuMembresias, esAdmin);
         setVisibilidadBoton(btnMenuBitacora, esAdmin);
         setVisibilidadBoton(btnMenuNotificaciones, esAdmin); // Fase 5
         setVisibilidadBoton(btnMenuEmpleados, esAdmin);      // Fase 6
+        setVisibilidadBoton(btnMenuReportes, esAdmin);
+        setVisibilidadBoton(btnMenuProductos, esAdmin);
+
     }
 
     private void setVisibilidadBoton(Button btn, boolean visible) {
@@ -200,6 +203,25 @@ public class DashboardController {
         );
         t.setDaemon(true);
         t.start();
+    }
+
+    @FXML
+    private void menuReportes() {
+        if (!usuarioActual.esAdmin()) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(
+                            "/com/gymmanager/views/reportes.fxml")
+            );
+            Parent vista = loader.load();
+            ReportesController ctrl = loader.getController();
+            ctrl.inicializar(usuarioActual);
+            colocarEnContentArea(vista);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

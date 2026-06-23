@@ -398,3 +398,427 @@
 .table-row-cell.fila-sin-stock:selected {
     -fx-background-color: rgba(220, 38, 38, 0.30);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MÓDULO: REPORTES Y GANANCIAS — Fase 9
+   Agregar al FINAL de estilos.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CONTENEDOR PRINCIPAL
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root {
+    -fx-background-color: #0f1117;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TAB PANE
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .tab-pane {
+    -fx-background-color: #0f1117;
+    -fx-tab-min-height: 40px;
+}
+
+/* Cabecera de pestañas */
+.reportes-root .tab-pane .tab-header-area {
+    -fx-background-color: #1a1d2e;
+    -fx-padding: 0;
+}
+
+.reportes-root .tab-pane .tab-header-background {
+    -fx-background-color: #1a1d2e;
+    -fx-border-color: #2a2d3e;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Tab individual */
+.reportes-root .tab {
+    -fx-background-color: #1a1d2e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+}
+
+.reportes-root .tab .tab-label {
+    -fx-text-fill: #888899;
+    -fx-font-size: 13px;
+}
+
+/* Tab al hacer hover */
+.reportes-root .tab:hover {
+    -fx-background-color: #252836;
+}
+
+.reportes-root .tab:hover .tab-label {
+    -fx-text-fill: #ccccdd;
+}
+
+/* Tab seleccionada */
+.reportes-root .tab:selected {
+    -fx-background-color: #0f1117;
+    -fx-border-color: #ff6b35 transparent transparent transparent;
+    -fx-border-width: 2 0 0 0;
+}
+
+.reportes-root .tab:selected .tab-label {
+    -fx-text-fill: #ff6b35;
+    -fx-font-weight: bold;
+}
+
+/* Botón de cierre (está deshabilitado via tabClosingPolicy, pero por si acaso) */
+.reportes-root .tab .tab-close-button {
+    -fx-background-color: transparent;
+    -fx-shape: null;
+}
+
+/* Área de contenido de la pestaña activa */
+.reportes-root .tab-pane > .tab-content-area {
+    -fx-background-color: #0f1117;
+    -fx-padding: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TABLE VIEW
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .table-view {
+    -fx-background-color: #1a1d2e;
+    -fx-border-color: #2a2d3e;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 0;
+}
+
+/* Cabecera de columnas */
+.reportes-root .table-view .column-header-background {
+    -fx-background-color: #252836;
+    -fx-border-color: #2a2d3e;
+    -fx-border-width: 0 0 1 0;
+}
+
+.reportes-root .table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 36px;
+    -fx-border-color: transparent #2a2d3e transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.reportes-root .table-view .column-header .label {
+    -fx-text-fill: #ff6b35;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 8 0 8;
+}
+
+/* Separador en la esquina superior derecha de la tabla */
+.reportes-root .table-view .column-header-background .filler {
+    -fx-background-color: #252836;
+}
+
+/* Filas */
+.reportes-root .table-row-cell {
+    -fx-background-color: #1a1d2e;
+    -fx-border-color: transparent transparent #22253a transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 34px;
+}
+
+/* Fila alterna (par) */
+.reportes-root .table-row-cell:even {
+    -fx-background-color: #1e2133;
+}
+
+/* Fila impar */
+.reportes-root .table-row-cell:odd {
+    -fx-background-color: #1a1d2e;
+}
+
+/* Hover sobre fila */
+.reportes-root .table-row-cell:hover {
+    -fx-background-color: #252944;
+}
+
+/* Fila seleccionada */
+.reportes-root .table-row-cell:selected {
+    -fx-background-color: #3a2a1a;
+    -fx-border-color: transparent transparent #ff6b35 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Celdas */
+.reportes-root .table-cell {
+    -fx-text-fill: #ccccdd;
+    -fx-font-size: 13px;
+    -fx-padding: 0 8 0 8;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+}
+
+.reportes-root .table-row-cell:selected .table-cell {
+    -fx-text-fill: #ffffff;
+}
+
+/* Placeholder "Sin datos" */
+.reportes-root .table-view .placeholder .label {
+    -fx-text-fill: #555566;
+    -fx-font-size: 13px;
+}
+
+/* Scroll bar de la tabla */
+.reportes-root .table-view .scroll-bar:vertical,
+.reportes-root .table-view .scroll-bar:horizontal {
+    -fx-background-color: #1a1d2e;
+}
+
+.reportes-root .table-view .scroll-bar:vertical .thumb,
+.reportes-root .table-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #3a3d4e;
+    -fx-background-radius: 4px;
+}
+
+.reportes-root .table-view .scroll-bar:vertical .track,
+.reportes-root .table-view .scroll-bar:horizontal .track {
+    -fx-background-color: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BAR CHART (ganancias vertical + productos horizontal)
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .chart {
+    -fx-background-color: transparent;
+    -fx-padding: 8 4 8 4;
+}
+
+/* Área interior donde se dibujan las barras */
+.reportes-root .chart-plot-background {
+    -fx-background-color: #1a1d2e;
+    -fx-background-radius: 4px;
+}
+
+/* Líneas de cuadrícula verticales */
+.reportes-root .chart-vertical-grid-lines {
+    -fx-stroke: #2a2d3e;
+    -fx-stroke-width: 1;
+}
+
+/* Líneas de cuadrícula horizontales */
+.reportes-root .chart-horizontal-grid-lines {
+    -fx-stroke: #2a2d3e;
+    -fx-stroke-width: 1;
+}
+
+/* Líneas de cuadrícula menores (si están activas) */
+.reportes-root .chart-vertical-zero-line,
+.reportes-root .chart-horizontal-zero-line {
+    -fx-stroke: #3a3d4e;
+    -fx-stroke-width: 1;
+}
+
+/* Tick marks de los ejes */
+.reportes-root .axis {
+    -fx-tick-label-fill: #888899;
+    -fx-font-size: 11px;
+}
+
+.reportes-root .axis-label {
+    -fx-text-fill: #aaaaaa;
+    -fx-font-size: 12px;
+}
+
+.reportes-root .axis > .axis-tick-mark,
+.reportes-root .axis > .axis-minor-tick-mark {
+    -fx-stroke: #3a3d4e;
+}
+
+/* Línea del eje */
+.reportes-root .chart-series-bar {
+    -fx-background-color: #ff6b35;   /* fallback; el controller lo aplica por barra */
+    -fx-background-radius: 2 2 0 0;  /* vértices superiores redondeados */
+}
+
+/* Leyenda de la gráfica (oculta via setLegendVisible(false), pero por si acaso) */
+.reportes-root .chart-legend {
+    -fx-background-color: #1a1d2e;
+    -fx-border-color: #2a2d3e;
+}
+
+.reportes-root .chart-legend-item {
+    -fx-text-fill: #aaaaaa;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CHOICE BOX (selectores de mes y año)
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .choice-box {
+    -fx-background-color: #252836;
+    -fx-border-color: #3a3d4e;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
+}
+
+.reportes-root .choice-box:hover {
+    -fx-border-color: #ff6b35;
+}
+
+.reportes-root .choice-box .label {
+    -fx-text-fill: #eeeeee;
+    -fx-font-size: 13px;
+}
+
+/* Flecha del ChoiceBox */
+.reportes-root .choice-box .open-button {
+    -fx-background-color: transparent;
+}
+
+.reportes-root .choice-box .open-button .arrow {
+    -fx-background-color: #888899;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+/* Popup del ChoiceBox */
+.reportes-root .choice-box .context-menu {
+    -fx-background-color: #252836;
+    -fx-border-color: #3a3d4e;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 12, 0, 0, 4);
+}
+
+.reportes-root .choice-box .menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 6 16 6 16;
+}
+
+.reportes-root .choice-box .menu-item .label {
+    -fx-text-fill: #ccccdd;
+    -fx-font-size: 13px;
+}
+
+.reportes-root .choice-box .menu-item:focused {
+    -fx-background-color: #3a2a1a;
+}
+
+.reportes-root .choice-box .menu-item:focused .label {
+    -fx-text-fill: #ff6b35;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   RADIO BUTTONS (Día / Semana / Mes)
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .radio-button {
+    -fx-text-fill: #ccccdd;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.reportes-root .radio-button .radio {
+    -fx-background-color: #252836;
+    -fx-border-color: #3a3d4e;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+}
+
+.reportes-root .radio-button:hover .radio {
+    -fx-border-color: #ff6b35;
+}
+
+/* Punto interior cuando está seleccionado */
+.reportes-root .radio-button:selected .radio {
+    -fx-background-color: #252836;
+    -fx-border-color: #ff6b35;
+}
+
+.reportes-root .radio-button:selected .dot {
+    -fx-background-color: #ff6b35;
+    -fx-background-radius: 50%;
+}
+
+.reportes-root .radio-button:selected {
+    -fx-text-fill: #ff6b35;
+    -fx-font-weight: bold;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BOTÓN CARGAR
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .btn-cargar {
+    -fx-background-color: #ff6b35;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-padding: 8 20 8 20;
+}
+
+.reportes-root .btn-cargar:hover {
+    -fx-background-color: #ff8555;
+}
+
+.reportes-root .btn-cargar:pressed {
+    -fx-background-color: #e05520;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LABELS ESPECIALES
+───────────────────────────────────────────────────────────────────────── */
+/* Etiqueta "Total del período" */
+.reportes-root .lbl-total-periodo {
+    -fx-text-fill: #ff6b35;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+/* Etiqueta "Sin datos" */
+.reportes-root .lbl-sin-datos {
+    -fx-text-fill: #555566;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+}
+
+/* Subtítulos de cada pestaña */
+.reportes-root .lbl-subtitulo {
+    -fx-text-fill: #888899;
+    -fx-font-size: 13px;
+}
+
+/* Hint de doble clic */
+.reportes-root .lbl-hint {
+    -fx-text-fill: #555566;
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PANEL DE FILTROS (HBox con fondo oscuro)
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .panel-filtros {
+    -fx-background-color: #1a1d2e;
+    -fx-border-color: #2a2d3e;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 14 20 14 20;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SEPARADOR VERTICAL dentro del panel de filtros
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .separator:vertical .line {
+    -fx-border-color: #2a2d3e;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SCROLL PANE (por si algún contenedor lo usa)
+───────────────────────────────────────────────────────────────────────── */
+.reportes-root .scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.reportes-root .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}

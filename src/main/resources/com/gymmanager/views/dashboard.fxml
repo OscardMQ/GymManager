@@ -33,6 +33,7 @@
             <Button fx:id="btnMenuEmpleados" text="👥  Empleados" onAction="#menuEmpleados" styleClass="menu-item" maxWidth="Infinity"/>
             <Button fx:id="btnMenuProductos" text="📦  Productos" onAction="#menuProductos" styleClass="menu-item" maxWidth="Infinity"/>
             <Button fx:id="btnMenuVentas" text="💰  Ventas" onAction="#menuVentas" maxWidth="Infinity" styleClass="menu-item"/>
+            <Button fx:id="btnMenuReportes" text="📊  Reportes" maxWidth="Infinity" onAction="#menuReportes" styleClass="menu-item"/>
         </VBox>
     </left>
 

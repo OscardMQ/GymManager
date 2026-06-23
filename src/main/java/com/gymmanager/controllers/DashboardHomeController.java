@@ -22,8 +22,6 @@ public class DashboardHomeController {
     @FXML private Label lblIngresos;
     @FXML private Label lblStock;
     @FXML private Label lblMes;
-    @FXML private Label lblKpiStockBajo;
-
     /**
      * Carga todos los KPIs desde los servicios.
      * Cada métrica falla de forma independiente para no bloquear las demás.
@@ -63,14 +61,7 @@ public class DashboardHomeController {
             lblIngresos.setText("—");
         }
 
-        int stockBajo = ProductoService.getInstance().listarStockBajo().size();
-        lblKpiStockBajo.setText(String.valueOf(stockBajo));
-// Colorear en ámbar si hay productos con stock bajo
-        lblKpiStockBajo.setStyle(stockBajo > 0
-                ? "-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"
-                : "-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #16a34a;");
-
         // Stock preparado para Fase 7 — siempre 0 por ahora
-        lblStock.setText("0");
+        lblStock.setText(String.valueOf(ProductoService.getInstance().listarStockBajo().size()));
     }
 }

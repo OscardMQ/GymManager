@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.ReportesController"
+      styleClass="reportes-root"
+      spacing="0">
+
+    <stylesheets>
+        <URL value="@../css/estilos.css"/>
+    </stylesheets>
+
+    <!-- ENCABEZADO -->
+    <HBox style="-fx-background-color: #1a1d2e;
+             -fx-border-color: #2a2d3e;
+             -fx-border-width: 0 0 1 0;"
+          alignment="CENTER_LEFT">
+        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+        <Label text="📈  Reportes y Ganancias"
+               style="-fx-text-fill: #ffffff; -fx-font-size: 20; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- TAB PANE -->
+    <TabPane VBox.vgrow="ALWAYS"
+             tabClosingPolicy="UNAVAILABLE"
+             style="-fx-tab-min-width: 160;">
+
+        <!-- TAB 1: GANANCIAS -->
+        <Tab text="💰  Ganancias">
+            <VBox spacing="12" style="-fx-background-color: #0f1117;">
+                <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                <!-- Panel filtros -->
+                <HBox alignment="CENTER_LEFT" spacing="20"
+                      style="-fx-background-color: #1a1d2e;
+                             -fx-border-color: #2a2d3e;
+                             -fx-border-radius: 6;
+                             -fx-background-radius: 6;">
+                    <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+
+                    <Label text="Ver por:"
+                           style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+
+                    <RadioButton fx:id="rbDia"    text="Día"
+                                 style="-fx-text-fill: #eeeeee;"/>
+                    <RadioButton fx:id="rbSemana" text="Semana"
+                                 style="-fx-text-fill: #eeeeee;"/>
+                    <RadioButton fx:id="rbMes"    text="Mes"
+                                 style="-fx-text-fill: #eeeeee;"/>
+
+                    <Separator orientation="VERTICAL"/>
+
+                    <Label fx:id="lblMes" text="Mes:"
+                           style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+                    <ChoiceBox fx:id="cbMes" prefWidth="130"
+                               style="-fx-background-color: #252836;
+                                      -fx-mark-color: #aaaaaa;"/>
+
+                    <Label text="Año:"
+                           style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+                    <ChoiceBox fx:id="cbAnio" prefWidth="90"
+                               style="-fx-background-color: #252836;
+                                      -fx-mark-color: #aaaaaa;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button text="Cargar"
+                            onAction="#cargarGanancias"
+                            prefWidth="100"
+                            style="-fx-background-color: #ff6b35;
+                                   -fx-text-fill: #ffffff;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 6;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Total del periodo -->
+                <Label fx:id="lblTotalPeriodo"
+                       text=""
+                       style="-fx-text-fill: #ff6b35;
+                              -fx-font-size: 15;
+                              -fx-font-weight: bold;"/>
+
+                <!-- Sin datos -->
+                <Label fx:id="lblSinDatosGanancias"
+                       text="Sin datos para el período seleccionado."
+                       visible="false"
+                       managed="false"
+                       style="-fx-text-fill: #666666;
+                              -fx-font-size: 14;
+                              -fx-font-style: italic;"/>
+
+                <!-- Contenedor grafica barras vertical -->
+                <VBox fx:id="contenedorChartGanancias"
+                      VBox.vgrow="ALWAYS"
+                      minHeight="300"
+                      style="-fx-background-color: transparent;"/>
+
+            </VBox>
+        </Tab>
+
+        <!-- TAB 2: PRODUCTOS -->
+        <Tab text="🏆  Productos más vendidos">
+            <VBox spacing="16" style="-fx-background-color: #0f1117;">
+                <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                <Label text="Top 10 productos más vendidos"
+                       style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+
+                <HBox VBox.vgrow="ALWAYS" spacing="20">
+
+                    <TableView fx:id="tablaProductos"
+                               prefWidth="300"
+                               HBox.hgrow="NEVER"
+                               style="-fx-background-color: #1a1d2e;
+                                      -fx-border-color: #2a2d3e;">
+                        <columns>
+                            <TableColumn fx:id="colProdNombre"
+                                         text="Producto"
+                                         prefWidth="190"/>
+                            <TableColumn fx:id="colProdCantidad"
+                                         text="Unidades vendidas"
+                                         prefWidth="105"/>
+                        </columns>
+                    </TableView>
+
+                    <HBox fx:id="contenedorChartProductos"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: transparent;"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <!-- TAB 3: MEMBRESIAS -->
+        <Tab text="📋  Membresías">
+            <VBox spacing="12" style="-fx-background-color: #0f1117;">
+                <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                <Label text="Historial de pagos de membresías (más recientes primero)"
+                       style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+
+                <TableView fx:id="tablaMembresias"
+                           VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #1a1d2e;
+                                  -fx-border-color: #2a2d3e;">
+                    <columns>
+                        <TableColumn fx:id="colMembFecha" text="Fecha"      prefWidth="120"/>
+                        <TableColumn fx:id="colMembSocio" text="Socio"      prefWidth="220"/>
+                        <TableColumn fx:id="colMembMonto" text="Monto"      prefWidth="110"/>
+                        <TableColumn fx:id="colMembTipo"  text="Membresía" prefWidth="200"/>
+                    </columns>
+                </TableView>
+
+            </VBox>
+        </Tab>
+
+        <!-- TAB 4: VENTAS POS -->
+        <Tab text="🛒  Ventas POS">
+            <VBox spacing="12" style="-fx-background-color: #0f1117;">
+                <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="Historial de ventas del Punto de Venta (más recientes primero)"
+                           style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="💡 Doble clic en una fila para ver el detalle"
+                           style="-fx-text-fill: #555566;
+                                  -fx-font-size: 11;
+                                  -fx-font-style: italic;"/>
+                </HBox>
+
+                <TableView fx:id="tablaVentas"
+                           VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #1a1d2e;
+                                  -fx-border-color: #2a2d3e;">
+                    <columns>
+                        <TableColumn fx:id="colVentaFecha"   text="Fecha"   prefWidth="130"/>
+                        <TableColumn fx:id="colVentaHora"    text="Hora"    prefWidth="100"/>
+                        <TableColumn fx:id="colVentaUsuario" text="Usuario" prefWidth="180"/>
+                        <TableColumn fx:id="colVentaTotal"   text="Total"   prefWidth="110"/>
+                    </columns>
+                </TableView>
+
+            </VBox>
+        </Tab>
+
+    </TabPane>
+</VBox>
