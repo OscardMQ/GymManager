@@ -45,4 +45,44 @@ public class MembresiaDAOImpl implements MembresiaDAO {
         m.setDescripcion(rs.getString("descripcion"));
         return m;
     }
+
+    /** Inserta una nueva membresía en la BD. */
+    public void insertar(Membresia m) throws SQLException {
+        String sql =
+                "INSERT INTO membresias (nombre, precio, duracion_dias, descuento_estudiante, descripcion) " +
+                        "VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = con().prepareStatement(sql)) {
+            ps.setString(1, m.getNombre());
+            ps.setDouble(2, m.getPrecio());
+            ps.setInt(3,    m.getDuracionDias());
+            ps.setDouble(4, m.getDescuentoEstudiante());
+            ps.setString(5, m.getDescripcion());
+            ps.executeUpdate();
+        }
+    }
+
+    /** Actualiza todos los campos de una membresía existente por su ID. */
+    public void actualizar(Membresia m) throws SQLException {
+        String sql =
+                "UPDATE membresias SET nombre=?, precio=?, duracion_dias=?, " +
+                        "descuento_estudiante=?, descripcion=? WHERE id=?";
+        try (PreparedStatement ps = con().prepareStatement(sql)) {
+            ps.setString(1, m.getNombre());
+            ps.setDouble(2, m.getPrecio());
+            ps.setInt(3,    m.getDuracionDias());
+            ps.setDouble(4, m.getDescuentoEstudiante());
+            ps.setString(5, m.getDescripcion());
+            ps.setInt(6,    m.getId());
+            ps.executeUpdate();
+        }
+    }
+
+    /** Elimina una membresía de la BD por su ID. */
+    public void eliminar(int id) throws SQLException {
+        String sql = "DELETE FROM membresias WHERE id=?";
+        try (PreparedStatement ps = con().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
 }

@@ -86,20 +86,30 @@ public class DashboardController {
     }
 
     @FXML private void menuBitacora() {
-        javafx.scene.layout.VBox vbox = new javafx.scene.layout.VBox(12);
-        vbox.setAlignment(javafx.geometry.Pos.CENTER);
-        javafx.scene.control.Label l = new javafx.scene.control.Label("📋 Bitácora — próximamente");
-        l.setStyle("-fx-text-fill:#8b8fa8; -fx-font-size:16px;");
-        vbox.getChildren().add(l);
-        colocarEnContentArea(vbox);
+        if (!usuarioActual.esAdmin()) return;
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gymmanager/views/bitacora.fxml"));
+            Parent vista = loader.load();
+            BitacoraController ctrl = loader.getController();
+            ctrl.inicializar(usuarioActual);
+            colocarEnContentArea(vista);
+        } catch (IOException e) {
+            System.err.println("[DashboardController] Error cargando bitácora: " + e.getMessage());
+        }
     }
     @FXML private void menuMembresias() {
-        javafx.scene.layout.VBox vbox = new javafx.scene.layout.VBox(12);
-        vbox.setAlignment(javafx.geometry.Pos.CENTER);
-        javafx.scene.control.Label l = new javafx.scene.control.Label("🏷 Membresías — próximamente");
-        l.setStyle("-fx-text-fill:#8b8fa8; -fx-font-size:16px;");
-        vbox.getChildren().add(l);
-        colocarEnContentArea(vbox);
+        if (!usuarioActual.esAdmin()) return;
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/gymmanager/views/membresias.fxml"));
+            Parent vista = loader.load();
+            MembresiaController ctrl = loader.getController();
+            ctrl.inicializar(usuarioActual);
+            colocarEnContentArea(vista);
+        } catch (IOException e) {
+            System.err.println("[DashboardController] Error cargando membresías: " + e.getMessage());
+        }
     }
     @FXML private void menuNotificaciones() { cargarVista("/com/gymmanager/views/notificaciones.fxml"); }
 

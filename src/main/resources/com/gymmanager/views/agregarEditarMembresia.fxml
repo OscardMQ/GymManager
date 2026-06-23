@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.AgregarEditarMembresiaController"
+      styleClass="modal-contenido"
+      spacing="14"
+      minWidth="440">
+
+    <stylesheets>
+        <URL value="@../css/estilos.css"/>
+    </stylesheets>
+
+    <padding><Insets top="24" right="28" bottom="24" left="28"/></padding>
+
+    <!-- Título dinámico (se sobreescribe en inicializar) -->
+    <Label fx:id="lblTitulo" text="Membresía" styleClass="modal-titulo"/>
+    <Separator styleClass="modal-separador"/>
+
+    <!-- Nombre -->
+    <VBox spacing="4">
+        <Label text="Nombre *" styleClass="campo-label"/>
+        <TextField fx:id="tfNombre" styleClass="campo-texto"
+                   promptText="Ej: Mensual Plus" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- Precio -->
+    <VBox spacing="4">
+        <Label text="Precio *" styleClass="campo-label"/>
+        <TextField fx:id="tfPrecio" styleClass="campo-texto"
+                   promptText="0.00" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- Duración -->
+    <VBox spacing="4">
+        <Label text="Duración (días) *" styleClass="campo-label"/>
+        <TextField fx:id="tfDuracion" styleClass="campo-texto"
+                   promptText="30" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- Descuento estudiante -->
+    <VBox spacing="8">
+        <CheckBox fx:id="chkDescuento"
+                  text="Aplica descuento estudiante"
+                  style="-fx-text-fill: #cbd5e1; -fx-cursor: hand;"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Monto del descuento:" styleClass="campo-label"/>
+            <TextField fx:id="tfDescuento" styleClass="campo-texto"
+                       promptText="0.00" prefWidth="160"/>
+        </HBox>
+    </VBox>
+
+    <!-- Descripción -->
+    <VBox spacing="4">
+        <Label text="Descripción" styleClass="campo-label"/>
+        <!-- TextArea con estilo inline para no heredar pref-height/width del campo-texto -->
+        <TextArea fx:id="taDescripcion"
+                  promptText="Descripción opcional..."
+                  prefRowCount="3"
+                  wrapText="true"
+                  style="-fx-background-color:#1a1d27; -fx-text-fill:#f1f5f9; -fx-prompt-text-fill:#374151; -fx-border-color:#2d3148; -fx-border-radius:6; -fx-background-radius:6; -fx-font-size:14px; -fx-padding:8 12 8 12;"/>
+    </VBox>
+
+    <!-- Mensaje de error -->
+    <Label fx:id="lblError" styleClass="error-label" wrapText="true"/>
+
+    <!-- Botones -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <padding><Insets top="6" right="0" bottom="0" left="0"/></padding>
+        <Button fx:id="btnCancelar" text="Cancelar"
+                styleClass="boton-secundario" onAction="#onCancelar"/>
+        <Button fx:id="btnGuardar"  text="Guardar"
+                styleClass="boton-primario"   onAction="#onGuardar"/>
+    </HBox>
+</VBox>

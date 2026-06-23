@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.BitacoraController"
+      styleClass="modulo-contenido"
+      spacing="16">
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <!-- Título -->
+    <HBox alignment="CENTER_LEFT">
+        <Label text="📋 Bitácora" styleClass="modulo-titulo"/>
+    </HBox>
+
+    <!-- Panel de filtros (fondo oscuro, bordes sutiles, sin padding como atributo) -->
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-background-color:#1a1d2e; -fx-background-radius:6; -fx-border-color:#2d3050; -fx-border-radius:6;">
+        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+        <Label text="Desde:"  styleClass="etiqueta-info"/>
+        <DatePicker fx:id="dpDesde" prefWidth="145" promptText="yyyy-mm-dd"/>
+        <Label text="Hasta:"  styleClass="etiqueta-info"/>
+        <DatePicker fx:id="dpHasta" prefWidth="145" promptText="yyyy-mm-dd"/>
+        <Label text="Acción:" styleClass="etiqueta-info"/>
+        <ChoiceBox fx:id="cbAccion" prefWidth="190" styleClass="combo-filtro"/>
+        <Button fx:id="btnFiltrar" text="Filtrar"
+                styleClass="boton-primario"   onAction="#onFiltrar"/>
+        <Button fx:id="btnLimpiar" text="Limpiar filtros"
+                styleClass="boton-secundario" onAction="#onLimpiar"/>
+    </HBox>
+
+    <!-- Tabla de registros (no editable) -->
+    <TableView fx:id="tablaBitacora" styleClass="tabla-socios"
+               VBox.vgrow="ALWAYS" editable="false">
+        <columns>
+            <TableColumn fx:id="colFecha"       text="Fecha"       prefWidth="110"/>
+            <TableColumn fx:id="colHora"        text="Hora"        prefWidth="90"/>
+            <TableColumn fx:id="colUsuario"     text="Usuario"     prefWidth="150"/>
+            <TableColumn fx:id="colAccion"      text="Acción"      prefWidth="210"/>
+            <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="410"/>
+        </columns>
+        <placeholder>
+            <Label text="No hay registros en la bitácora." styleClass="etiqueta-info"/>
+        </placeholder>
+    </TableView>
+</VBox>

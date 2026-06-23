@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gymmanager.controllers.MembresiaController"
+      styleClass="modulo-contenido"
+      spacing="16">
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <!-- Encabezado: título + botones de acción -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="🏷 Membresías" styleClass="modulo-titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnNueva"    text="+ Nueva Membresía"
+                styleClass="boton-primario"   onAction="#onNueva"/>
+        <Button fx:id="btnEditar"   text="✏ Editar"
+                styleClass="boton-secundario" onAction="#onEditar"/>
+        <Button fx:id="btnEliminar" text="🗑 Eliminar"
+                styleClass="boton-peligro"    onAction="#onEliminar"/>
+    </HBox>
+
+    <!-- Tabla principal -->
+    <TableView fx:id="tablaMembresias" styleClass="tabla-socios" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colNombre"      text="Nombre"           prefWidth="190"/>
+            <TableColumn fx:id="colPrecio"      text="Precio"           prefWidth="110"/>
+            <TableColumn fx:id="colDuracion"    text="Duración (días)"  prefWidth="140"/>
+            <TableColumn fx:id="colDescuento"   text="Desc. Estudiante" prefWidth="160"/>
+            <TableColumn fx:id="colDescripcion" text="Descripción"      prefWidth="340"/>
+        </columns>
+        <placeholder>
+            <Label text="No hay membresías registradas." styleClass="etiqueta-info"/>
+        </placeholder>
+    </TableView>
+</VBox>
