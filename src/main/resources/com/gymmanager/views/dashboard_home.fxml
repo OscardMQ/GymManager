@@ -61,7 +61,7 @@
             <!-- Fila 2: Ingresos del mes · Stock -->
             <HBox spacing="16">
 
-                <VBox styleClass="kpi-card, kpi-azul" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <VBox fx:id="cardIngresos" styleClass="kpi-card, kpi-azul" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label text="💰" style="-fx-font-size: 20;"/>
                         <Label text="Ingresos del Mes" styleClass="kpi-titulo"/>

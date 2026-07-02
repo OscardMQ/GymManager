@@ -28,7 +28,7 @@
         <!-- Encabezado -->
         <VBox alignment="CENTER" spacing="6">
             <Label text="💪" styleClass="login-icono"/>
-            <Label text="GymManager" styleClass="login-titulo"/>
+            <Label text="GymManager - Gen-Fit" styleClass="login-titulo"/>
             <Label text="Sistema de Gestión de Gimnasio" styleClass="login-subtitulo"/>
         </VBox>
 
@@ -65,6 +65,6 @@
                 maxWidth="Infinity"
                 onAction="#handleLogin"/>
 
-        <Label text="GymManager v2.0 © 2025" styleClass="version-etiqueta"/>
+        <Label text="GymManager v1.0 © 2026" styleClass="version-etiqueta"/>
     </VBox>
 </StackPane>

@@ -22,10 +22,6 @@
             <Label text="Teléfono" styleClass="campo-etiqueta"/>
             <TextField fx:id="campoTelefono" promptText="55 1234 5678" styleClass="campo-texto"/>
         </VBox>
-        <VBox spacing="4" HBox.hgrow="ALWAYS">
-            <Label text="WhatsApp" styleClass="campo-etiqueta"/>
-            <TextField fx:id="campoWhatsapp" promptText="55 1234 5678" styleClass="campo-texto"/>
-        </VBox>
     </HBox>
 
     <VBox spacing="4">

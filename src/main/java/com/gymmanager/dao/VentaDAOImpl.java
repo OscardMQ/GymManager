@@ -66,14 +66,23 @@ public class VentaDAOImpl implements VentaDAO {
             }
 
             // ── 3. Descontar stock de cada producto (batch, misma transacción) ──
-            String sqlStock = "UPDATE productos SET stock = stock - ? WHERE id = ?";
+            // La condición stock >= cantidad evita stock negativo si el inventario
+            // cambió entre la validación del service y este UPDATE.
+            String sqlStock = "UPDATE productos SET stock = stock - ? WHERE id = ? AND stock >= ?";
             try (PreparedStatement ps = conn.prepareStatement(sqlStock)) {
                 for (DetalleVenta d : detalles) {
                     ps.setInt(1, d.getCantidad());
                     ps.setInt(2, d.getProductoId());
+                    ps.setInt(3, d.getCantidad());
                     ps.addBatch();
                 }
-                ps.executeBatch();
+                int[] afectados = ps.executeBatch();
+                for (int i = 0; i < afectados.length; i++) {
+                    if (afectados[i] == 0) {
+                        throw new SQLException("Stock insuficiente para el producto ID "
+                                + detalles.get(i).getProductoId() + "; venta cancelada.");
+                    }
+                }
             }
 
             conn.commit();

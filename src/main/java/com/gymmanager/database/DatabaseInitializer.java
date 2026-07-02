@@ -1,6 +1,10 @@
 package com.gymmanager.database;
 
+import com.gymmanager.security.PasswordHasher;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -11,11 +15,13 @@ import java.sql.Statement;
 public class DatabaseInitializer {
 
     public static void inicializar() {
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             Statement stmt = conn.createStatement()) {
-
-            crearTablas(stmt);
-            insertarDatosSemilla(stmt);
+        try {
+            // OJO: la Connection es el singleton compartido; no cerrarla aquí
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+            try (Statement stmt = conn.createStatement()) {
+                crearTablas(stmt);
+            }
+            insertarDatosSemilla(conn);
 
         } catch (SQLException e) {
             System.err.println("[DatabaseInitializer] Error al inicializar BD: " + e.getMessage());
@@ -143,25 +149,45 @@ public class DatabaseInitializer {
 """);
     }
 
-    private static void insertarDatosSemilla(Statement stmt) throws SQLException {
+    private static void insertarDatosSemilla(Connection conn) throws SQLException {
 
-        // Membresías base del gimnasio Gen Fit
-        stmt.execute("""
-                INSERT OR IGNORE INTO membresias (id, nombre, precio, duracion_dias, descuento_estudiante, descripcion)
-                VALUES
-                    (1, 'Mensual',     370.0, 30, 0, 'Acceso completo por 30 días'),
-                    (2, 'Estudiante',  320.0, 30, 1, 'Mensual con descuento estudiantil'),
-                    (3, 'Semanal',     120.0,  7, 0, 'Acceso por 7 días'),
-                    (4, 'Visita',       40.0,  1, 0, 'Acceso por un día')
-                """);
+        try (Statement stmt = conn.createStatement()) {
+            // Membresías base del gimnasio Gen Fit
+            stmt.execute("""
+                    INSERT OR IGNORE INTO membresias (id, nombre, precio, duracion_dias, descuento_estudiante, descripcion)
+                    VALUES
+                        (1, 'Mensual',     370.0, 30, 0, 'Acceso completo por 30 días'),
+                        (2, 'Estudiante',  320.0, 30, 1, 'Mensual con descuento estudiantil'),
+                        (3, 'Semanal',     120.0,  7, 0, 'Acceso por 7 días'),
+                        (4, 'Visita',       40.0,  1, 0, 'Acceso por un día')
+                    """);
 
-        // Usuario administrador por defecto (contraseña: Admin123*)
-        // Hash BCrypt pre-generado para no depender de jBCrypt en la semilla
-        stmt.execute("""
-                INSERT OR IGNORE INTO usuarios (usuario, contrasena_bcrypt, rol, activo)
-                VALUES ('admin',
-                        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
-                        'ADMIN', 1)
-                """);
+            // Desactiva el 'admin' de semillas anteriores: su hash no correspondía
+            // a la contraseña documentada, así que la cuenta era inutilizable.
+            // Se filtra por el hash exacto para no tocar un 'admin' creado a mano.
+            stmt.execute("""
+                    UPDATE usuarios SET activo = 0
+                    WHERE usuario = 'admin'
+                      AND contrasena_bcrypt = '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'
+                    """);
+        }
+
+        // Usuario administrador por defecto (contraseña: Admin123*).
+        // Se verifica existencia antes de insertar para no recalcular
+        // el hash BCrypt (~300 ms) en cada arranque.
+        try (PreparedStatement check = conn.prepareStatement(
+                "SELECT 1 FROM usuarios WHERE usuario = ?")) {
+            check.setString(1, "Omar");
+            try (ResultSet rs = check.executeQuery()) {
+                if (rs.next()) return;
+            }
+        }
+
+        try (PreparedStatement insert = conn.prepareStatement(
+                "INSERT INTO usuarios (usuario, contrasena_bcrypt, rol, activo) VALUES (?, ?, 'ADMIN', 1)")) {
+            insert.setString(1, "Omar");
+            insert.setString(2, PasswordHasher.hashear("Admin123*"));
+            insert.executeUpdate();
+        }
     }
 }

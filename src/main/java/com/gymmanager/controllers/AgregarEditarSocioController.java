@@ -20,7 +20,6 @@ public class AgregarEditarSocioController {
     @FXML private Label               etiquetaTitulo;
     @FXML private TextField           campoNombre;
     @FXML private TextField           campoTelefono;
-    @FXML private TextField           campoWhatsapp;
     @FXML private ComboBox<Membresia> comboMembresia;
     @FXML private DatePicker          fechaInicio;
     @FXML private TextField           campoFechaFin;
@@ -43,7 +42,6 @@ public class AgregarEditarSocioController {
             etiquetaTitulo.setText("Editar Socio");
             campoNombre.setText(socio.getNombre());
             campoTelefono.setText(socio.getTelefono() != null ? socio.getTelefono() : "");
-            campoWhatsapp.setText(socio.getWhatsapp()  != null ? socio.getWhatsapp()  : "");
             seleccionarMembresiaPorId(socio.getTipoMembresia());
             if (socio.getFechaInicio() != null && !socio.getFechaInicio().isBlank())
                 fechaInicio.setValue(LocalDate.parse(socio.getFechaInicio()));
@@ -96,7 +94,6 @@ public class AgregarEditarSocioController {
         Socio socio = (socioEditando != null) ? socioEditando : new Socio();
         socio.setNombre(campoNombre.getText().trim());
         socio.setTelefono(campoTelefono.getText().trim());
-        socio.setWhatsapp(campoWhatsapp.getText().trim());
         socio.setTipoMembresia(membresia.getId());
         socio.setFechaInicio(inicio.toString());
         socio.setFechaFin(FechaUtils.calcularFechaFin(inicio, membresia.getDuracionDias()).toString());

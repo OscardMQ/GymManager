@@ -111,10 +111,14 @@ public class DashboardController {
             System.err.println("[DashboardController] Error cargando membresías: " + e.getMessage());
         }
     }
-    @FXML private void menuNotificaciones() { cargarVista("/com/gymmanager/views/notificaciones.fxml"); }
+    @FXML private void menuNotificaciones() {
+        if (!usuarioActual.esAdmin()) return;
+        cargarVista("/com/gymmanager/views/notificaciones.fxml");
+    }
 
     @FXML
     private void menuEmpleados() {
+        if (!usuarioActual.esAdmin()) return;
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/gymmanager/views/empleados.fxml"));
@@ -175,7 +179,7 @@ public class DashboardController {
                     getClass().getResource("/com/gymmanager/views/dashboard_home.fxml"));
             Node vista = loader.load();
             DashboardHomeController ctrl = loader.getController();
-            ctrl.cargarKPIs();
+            ctrl.inicializar(usuarioActual);
             colocarEnContentArea(vista);
         } catch (IOException e) {
             System.err.println("[DashboardController] Error cargando home: " + e.getMessage());
