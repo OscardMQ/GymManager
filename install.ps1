@@ -23,8 +23,9 @@ Write-Host ""
 
 # ── 1. Verificar Java 21 o superior ─────────────────────────────────────────
 function Get-JavaMajorVersion {
+    # cmd /c evita que PowerShell trate el stderr de "java -version" como error
     try {
-        $salida = & java -version 2>&1 | Out-String
+        $salida = cmd /c "java -version 2>&1" | Out-String
         $match  = [regex]::Match($salida, 'version "(\d+)')
         if ($match.Success) { return [int]$match.Groups[1].Value }
     } catch {}
