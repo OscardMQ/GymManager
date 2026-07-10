@@ -5,6 +5,7 @@ import com.gymmanager.models.Usuario;
 import com.gymmanager.services.BitacoraService;
 import com.gymmanager.services.SocioService;
 import com.gymmanager.utils.FechaUtils;
+import com.gymmanager.utils.Iconos;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -186,6 +187,7 @@ public class SociosController {
             ctrl.inicializar(socio, usuarioActual);
 
             Stage modal = new Stage();
+            Iconos.aplicar(modal);
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.setTitle(socio == null ? "Nuevo Socio" : "Editar Socio");
             modal.setResizable(false);

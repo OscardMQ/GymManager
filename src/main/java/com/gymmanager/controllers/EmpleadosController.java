@@ -2,6 +2,7 @@ package com.gymmanager.controllers;
 
 import com.gymmanager.models.Usuario;
 import com.gymmanager.services.EmpleadoService;
+import com.gymmanager.utils.Iconos;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -170,6 +171,7 @@ public class EmpleadosController {
             ctrl.inicializar(empleado, usuarioSesion.getUsuario());
 
             Stage modal = new Stage();
+            Iconos.aplicar(modal);
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.setTitle(empleado == null ? "Nuevo Empleado" : "Editar Empleado");
             modal.setResizable(false);

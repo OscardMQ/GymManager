@@ -3,6 +3,7 @@ package com.gymmanager.controllers;
 import com.gymmanager.models.Producto;
 import com.gymmanager.models.Usuario;
 import com.gymmanager.services.ProductoService;
+import com.gymmanager.utils.Iconos;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -202,6 +203,7 @@ public class ProductosController {
             ctrl.inicializar(producto, usuarioSesion.getUsuario());
 
             Stage modal = new Stage();
+            Iconos.aplicar(modal);
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.setTitle(producto == null ? "Nuevo Producto" : "Editar Producto");
             modal.setResizable(false);

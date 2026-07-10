@@ -4,6 +4,7 @@ import com.gymmanager.dao.MembresiaDAOImpl;
 import com.gymmanager.models.Membresia;
 import com.gymmanager.models.Usuario;
 import com.gymmanager.services.BitacoraService;
+import com.gymmanager.utils.Iconos;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -164,6 +165,7 @@ public class MembresiaController {
             ctrl.inicializar(membresia, usuarioActual);
 
             Stage stage = new Stage();
+            Iconos.aplicar(stage);
             stage.setScene(escena);
             stage.setTitle(membresia == null ? "Nueva Membresía" : "Editar Membresía");
             stage.initModality(Modality.APPLICATION_MODAL);

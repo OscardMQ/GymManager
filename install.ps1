@@ -58,6 +58,13 @@ Invoke-WebRequest -Uri $JarUrl -OutFile (Join-Path $InstallDir "GymManager.jar")
 $mb = [math]::Round((Get-Item (Join-Path $InstallDir "GymManager.jar")).Length / 1MB, 1)
 Write-Host "      Descargado en $InstallDir ($mb MB)" -ForegroundColor Green
 
+# Ícono para los accesos directos (si falla, se usa el ícono por defecto)
+$IconPath = Join-Path $InstallDir "GymManager.ico"
+try {
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/$Repo/main/assets/GymManager.ico" `
+        -OutFile $IconPath -UseBasicParsing
+} catch { $IconPath = $null }
+
 # ── 3. Crear accesos directos (javaw = sin ventana de consola) ──────────────
 Write-Host "[3/3] Creando accesos directos..."
 $javaw = $null
@@ -75,6 +82,7 @@ foreach ($ruta in $rutas) {
     $lnk.Arguments        = "-jar `"$(Join-Path $InstallDir 'GymManager.jar')`""
     $lnk.WorkingDirectory = $InstallDir
     $lnk.Description      = "GymManager - Sistema de Gestion de Gimnasio"
+    if ($IconPath -and (Test-Path $IconPath)) { $lnk.IconLocation = "$IconPath,0" }
     $lnk.Save()
 }
 Write-Host "      Accesos directos creados (Escritorio y Menu Inicio)." -ForegroundColor Green

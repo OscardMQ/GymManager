@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/portadagym.png" alt="GymManager" width="180"/>
+</p>
+
 # 💪 GymManager — Gen-Fit
 
 Sistema de escritorio para la gestión integral de un gimnasio: socios, membresías, pagos, punto de venta, inventario, reportes de ganancias y notificaciones por WhatsApp.

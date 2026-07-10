@@ -3,6 +3,7 @@ package com.gymmanager.app;
 import com.gymmanager.controllers.LoginController;
 import com.gymmanager.database.DatabaseInitializer;
 import com.gymmanager.services.NotificacionService;
+import com.gymmanager.utils.Iconos;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -41,6 +42,7 @@ public class Main extends Application {
         Scene scene = new Scene(loader.load());
 
         primaryStage.setTitle("GymManager — Gen Fit");
+        Iconos.aplicar(primaryStage);
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(650);
