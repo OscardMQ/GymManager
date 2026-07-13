@@ -14,7 +14,7 @@ public class ConfiguracionDAOImpl implements ConfiguracionDAO {
     @Override
     public Optional<String> get(String clave) throws SQLException {
         String sql = "SELECT valor FROM configuracion WHERE clave = ?";
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, clave);
@@ -29,7 +29,7 @@ public class ConfiguracionDAOImpl implements ConfiguracionDAO {
     @Override
     public void set(String clave, String valor) throws SQLException {
         String sql = "INSERT OR REPLACE INTO configuracion (clave, valor) VALUES (?, ?)";
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, clave);

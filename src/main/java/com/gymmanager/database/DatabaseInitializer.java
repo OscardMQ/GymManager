@@ -15,9 +15,7 @@ import java.sql.Statement;
 public class DatabaseInitializer {
 
     public static void inicializar() {
-        try {
-            // OJO: la Connection es el singleton compartido; no cerrarla aquí
-            Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection()) {
             try (Statement stmt = conn.createStatement()) {
                 crearTablas(stmt);
             }

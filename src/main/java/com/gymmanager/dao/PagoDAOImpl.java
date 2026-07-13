@@ -9,13 +9,9 @@ import java.util.List;
 
 /**
  * Implementación SQLite de PagoDAO.
- * Nunca cierra la conexión (es persistente y compartida).
+ * Cada operación abre y cierra su propia conexión (try-with-resources).
  */
 public class PagoDAOImpl implements PagoDAO {
-
-    private Connection conn() throws SQLException {
-        return DatabaseConnection.getInstance().getConnection();
-    }
 
     @Override
     public void guardar(Pago pago) throws SQLException {
@@ -23,7 +19,8 @@ public class PagoDAOImpl implements PagoDAO {
             INSERT INTO pagos (socio_id, fecha, monto, tipo_membresia_id)
             VALUES (?, ?, ?, ?)
         """;
-        try (PreparedStatement ps = conn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt   (1, pago.getSocioId());
             ps.setString(2, pago.getFecha());
             ps.setDouble(3, pago.getMonto());
@@ -45,18 +42,20 @@ public class PagoDAOImpl implements PagoDAO {
               AND strftime('%m', fecha) = ?
         """;
         List<Pago> lista = new ArrayList<>();
-        try (PreparedStatement ps = conn().prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, String.format("%04d", anio));
             ps.setString(2, String.format("%02d", mes));
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Pago p = new Pago();
-                p.setId            (rs.getInt   ("id"));
-                p.setSocioId       (rs.getInt   ("socio_id"));
-                p.setFecha         (rs.getString("fecha"));
-                p.setMonto         (rs.getDouble("monto"));
-                p.setTipoMembresiaId(rs.getInt  ("tipo_membresia_id"));
-                lista.add(p);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Pago p = new Pago();
+                    p.setId            (rs.getInt   ("id"));
+                    p.setSocioId       (rs.getInt   ("socio_id"));
+                    p.setFecha         (rs.getString("fecha"));
+                    p.setMonto         (rs.getDouble("monto"));
+                    p.setTipoMembresiaId(rs.getInt  ("tipo_membresia_id"));
+                    lista.add(p);
+                }
             }
         }
         return lista;

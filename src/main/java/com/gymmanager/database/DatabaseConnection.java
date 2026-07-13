@@ -9,67 +9,60 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Conexión a la base de datos SQLite usando el patrón Singleton.
+ * Fábrica de conexiones a la base de datos SQLite.
  *
- * La BD se almacena en ~/.gymmanager/gymmanager.db para no contaminar
- * el directorio de trabajo y persistir entre ejecuciones.
+ * Cada llamada a getConnection() abre una conexión NUEVA que el llamador
+ * debe cerrar (try-with-resources). Esto elimina la conexión compartida
+ * entre hilos: con WAL activo SQLite soporta lecturas concurrentes, y
+ * busy_timeout hace que un escritor espere al otro en vez de fallar
+ * con "database is locked".
  *
- * Uso: DatabaseConnection.getInstance().getConnection()
+ * Uso: try (Connection conn = DatabaseConnection.getConnection()) { ... }
  */
 public class DatabaseConnection {
 
-    private static DatabaseConnection instancia;
-    private Connection conexion;
+    // Carpeta de datos en el home del usuario.
+    // -Dgymmanager.dir=... permite apuntar a otra carpeta (pruebas).
+    private static final Path DIR_DATOS = Path.of(
+            System.getProperty("gymmanager.dir",
+                    Path.of(System.getProperty("user.home"), ".gymmanager").toString()));
 
-    // Carpeta de datos en el directorio home del usuario del SO
-    private static final Path DIR_DATOS = Path.of(System.getProperty("user.home"), ".gymmanager");
     private static final String URL_JDBC = "jdbc:sqlite:" + DIR_DATOS.resolve("gymmanager.db");
 
-    /** Constructor privado: evita instanciación externa */
-    private DatabaseConnection() throws SQLException {
-        asegurarDirectorio();
-        conexion = DriverManager.getConnection(URL_JDBC);
-        aplicarPragmas();
-    }
+    private static volatile boolean directorioListo = false;
 
-    /**
-     * Retorna la instancia única. Si la conexión fue cerrada, la recrea.
-     * Sincronizado para soporte básico de múltiples hilos.
-     */
-    public static synchronized DatabaseConnection getInstance() throws SQLException {
-        if (instancia == null || instancia.conexion.isClosed()) {
-            instancia = new DatabaseConnection();
+    /** Abre una conexión nueva con los PRAGMA aplicados. El llamador la cierra. */
+    public static Connection getConnection() throws SQLException {
+        if (!directorioListo) {
+            asegurarDirectorio();
+            directorioListo = true;
         }
-        return instancia;
-    }
-
-    /** Retorna la conexión SQL activa */
-    public Connection getConnection() {
-        return conexion;
-    }
-
-    /** Cierra la conexión de forma segura al apagar la app */
-    public void cerrar() throws SQLException {
-        if (conexion != null && !conexion.isClosed()) {
-            conexion.close();
+        Connection conn = DriverManager.getConnection(URL_JDBC);
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON");   // en SQLite es por-conexión
+            stmt.execute("PRAGMA busy_timeout = 5000"); // esperar al otro escritor
+            stmt.execute("PRAGMA journal_mode = WAL");  // persistente; re-aplicar es inocuo
+        } catch (SQLException e) {
+            conn.close();
+            throw e;
         }
+        return conn;
     }
 
-    /** Activa foreign keys y modo WAL para mejor rendimiento y consistencia */
-    private void aplicarPragmas() throws SQLException {
-        try (Statement stmt = conexion.createStatement()) {
-            stmt.execute("PRAGMA foreign_keys = ON");
-            // WAL permite lecturas concurrentes mientras hay escrituras
-            stmt.execute("PRAGMA journal_mode = WAL");
-        }
+    /** Ruta del archivo .db — usada por el servicio de respaldos. */
+    public static Path getRutaBaseDatos() {
+        return DIR_DATOS.resolve("gymmanager.db");
     }
 
-    /** Crea el directorio ~/.gymmanager si no existe todavía */
-    private void asegurarDirectorio() throws SQLException {
+    /** Crea el directorio de datos si no existe todavía */
+    private static void asegurarDirectorio() throws SQLException {
         try {
             Files.createDirectories(DIR_DATOS);
         } catch (IOException e) {
             throw new SQLException("No se pudo crear el directorio de datos: " + DIR_DATOS, e);
         }
     }
+
+    /** Clase de utilidad estática, no instanciar */
+    private DatabaseConnection() {}
 }

@@ -68,7 +68,7 @@ public class ReporteService {
                 ORDER BY dia
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, mesFmt);
             ps.setString(2, anioFmt);
@@ -112,7 +112,7 @@ public class ReporteService {
                 ORDER BY semana
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, anioFmt);
             ps.setString(2, anioFmt);
@@ -153,7 +153,7 @@ public class ReporteService {
                 ORDER BY mes
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, anioFmt);
             ps.setString(2, anioFmt);
@@ -189,7 +189,7 @@ public class ReporteService {
                 LIMIT ?
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, limite);
             ResultSet rs = ps.executeQuery();
@@ -228,7 +228,7 @@ public class ReporteService {
                 ORDER BY p.fecha DESC
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -262,7 +262,7 @@ public class ReporteService {
                 ORDER BY fecha DESC, hora DESC
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -300,7 +300,7 @@ public class ReporteService {
                 WHERE dv.venta_id = ?
                 """;
 
-        try (Connection con = DatabaseConnection.getInstance().getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, ventaId);
             ResultSet rs = ps.executeQuery();

@@ -20,7 +20,7 @@ public class NotificacionDAOImpl implements NotificacionDAO {
                 INSERT INTO notificaciones (socio_id, tipo, mensaje, fecha_envio, estado)
                 VALUES (?, ?, ?, ?, ?)
                 """;
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, n.getSocioId());
@@ -68,7 +68,7 @@ public class NotificacionDAOImpl implements NotificacionDAO {
     private List<Notificacion> ejecutarQuery(String sql, StatementPreparador preparador)
             throws SQLException {
         List<Notificacion> lista = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             preparador.preparar(stmt);

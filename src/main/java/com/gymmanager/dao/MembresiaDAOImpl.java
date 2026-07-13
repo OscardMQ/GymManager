@@ -7,16 +7,13 @@ import java.util.*;
 
 public class MembresiaDAOImpl implements MembresiaDAO {
 
-    private Connection con() throws SQLException {
-        return DatabaseConnection.getInstance().getConnection();
-    }
-
     @Override
     public List<Membresia> listar() throws SQLException {
         List<Membresia> lista = new ArrayList<>();
         String sql = "SELECT id, nombre, precio, duracion_dias, descuento_estudiante, descripcion " +
                 "FROM membresias ORDER BY precio";
-        try (PreparedStatement ps = con().prepareStatement(sql);
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) lista.add(mapear(rs));
         }
@@ -27,7 +24,8 @@ public class MembresiaDAOImpl implements MembresiaDAO {
     public Optional<Membresia> buscarPorId(int id) throws SQLException {
         String sql = "SELECT id, nombre, precio, duracion_dias, descuento_estudiante, descripcion " +
                 "FROM membresias WHERE id = ?";
-        try (PreparedStatement ps = con().prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() ? Optional.of(mapear(rs)) : Optional.empty();
@@ -51,7 +49,8 @@ public class MembresiaDAOImpl implements MembresiaDAO {
         String sql =
                 "INSERT INTO membresias (nombre, precio, duracion_dias, descuento_estudiante, descripcion) " +
                         "VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = con().prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, m.getNombre());
             ps.setDouble(2, m.getPrecio());
             ps.setInt(3,    m.getDuracionDias());
@@ -66,7 +65,8 @@ public class MembresiaDAOImpl implements MembresiaDAO {
         String sql =
                 "UPDATE membresias SET nombre=?, precio=?, duracion_dias=?, " +
                         "descuento_estudiante=?, descripcion=? WHERE id=?";
-        try (PreparedStatement ps = con().prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, m.getNombre());
             ps.setDouble(2, m.getPrecio());
             ps.setInt(3,    m.getDuracionDias());
@@ -80,7 +80,8 @@ public class MembresiaDAOImpl implements MembresiaDAO {
     /** Elimina una membresía de la BD por su ID. */
     public void eliminar(int id) throws SQLException {
         String sql = "DELETE FROM membresias WHERE id=?";
-        try (PreparedStatement ps = con().prepareStatement(sql)) {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }

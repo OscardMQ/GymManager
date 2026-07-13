@@ -28,8 +28,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public Optional<Usuario> buscarPorNombre(String nombreUsuario) throws SQLException {
-        Connection conn = DatabaseConnection.getInstance().getConnection();
-        try (PreparedStatement ps = conn.prepareStatement(SQL_BUSCAR)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_BUSCAR)) {
             ps.setString(1, nombreUsuario);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return Optional.of(mapearResultado(rs));
@@ -40,8 +40,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void guardar(Usuario usuario) throws SQLException {
-        Connection conn = DatabaseConnection.getInstance().getConnection();
-        try (PreparedStatement ps = conn.prepareStatement(SQL_GUARDAR)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_GUARDAR)) {
             ps.setString(1, usuario.getUsuario());
             ps.setString(2, usuario.getContrasenaBcrypt());
             ps.setString(3, usuario.getRol().name());
@@ -52,8 +52,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void cambiarEstado(int id, boolean activo) throws SQLException {
-        Connection conn = DatabaseConnection.getInstance().getConnection();
-        try (PreparedStatement ps = conn.prepareStatement(SQL_CAMBIAR_ESTADO)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_CAMBIAR_ESTADO)) {
             ps.setInt(1, activo ? 1 : 0);
             ps.setInt(2, id);
             ps.executeUpdate();
@@ -62,8 +62,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
     public void actualizarContrasena(int id, String nuevaContrasenaBcrypt) throws SQLException {
-        Connection conn = DatabaseConnection.getInstance().getConnection();
-        try (PreparedStatement ps = conn.prepareStatement(SQL_ACTUALIZAR_CONTRASENA)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_ACTUALIZAR_CONTRASENA)) {
             ps.setString(1, nuevaContrasenaBcrypt);
             ps.setInt(2, id);
             ps.executeUpdate();
@@ -77,13 +77,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT id, usuario, contrasena_bcrypt, rol, activo " +
                 "FROM usuarios WHERE rol = ? ORDER BY usuario";
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, rol.name());
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) lista.add(mapearResultado(rs));
-                }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, rol.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearResultado(rs));
             }
         } catch (SQLException e) {
             System.err.println("[UsuarioDAOImpl] Error listarPorRol: " + e.getMessage());
@@ -94,13 +92,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public Optional<Usuario> buscarPorId(int id) {
         String sql = "SELECT id, usuario, contrasena_bcrypt, rol, activo FROM usuarios WHERE id = ?";
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setInt(1, id);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) return Optional.of(mapearResultado(rs));
-                }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return Optional.of(mapearResultado(rs));
             }
         } catch (SQLException e) {
             System.err.println("[UsuarioDAOImpl] Error buscarPorId: " + e.getMessage());
@@ -111,13 +107,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public void actualizarNombreUsuario(int id, String nuevoNombre) {
         String sql = "UPDATE usuarios SET usuario = ? WHERE id = ?";
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, nuevoNombre);
-                ps.setInt(2, id);
-                ps.executeUpdate();
-            }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nuevoNombre);
+            ps.setInt(2, id);
+            ps.executeUpdate();
         } catch (SQLException e) {
             System.err.println("[UsuarioDAOImpl] Error actualizarNombreUsuario: " + e.getMessage());
         }

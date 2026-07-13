@@ -34,18 +34,14 @@ public class BitacoraService {
      * Falla silenciosamente para no interrumpir el flujo principal.
      */
     public void registrar(String usuario, String accion, String descripcion) {
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
-
-            try (PreparedStatement ps = conn.prepareStatement(SQL_INSERTAR)) {
-                ps.setString(1, usuario);
-                ps.setString(2, FechaUtils.hoyISO());
-                ps.setString(3, FechaUtils.horaActual());
-                ps.setString(4, accion);
-                ps.setString(5, descripcion);
-                ps.executeUpdate();
-            }
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_INSERTAR)) {
+            ps.setString(1, usuario);
+            ps.setString(2, FechaUtils.hoyISO());
+            ps.setString(3, FechaUtils.horaActual());
+            ps.setString(4, accion);
+            ps.setString(5, descripcion);
+            ps.executeUpdate();
         } catch (SQLException e) {
             System.err.println("[Bitácora] Error al registrar acción '" + accion + "': " + e.getMessage());
         }
@@ -87,8 +83,7 @@ public class BitacoraService {
         }
         sql.append(" ORDER BY fecha DESC, hora DESC");
 
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
                 for (int i = 0; i < params.size(); i++) {
                     ps.setString(i + 1, params.get(i));
@@ -120,8 +115,7 @@ public class BitacoraService {
         List<String> acciones = new ArrayList<>();
         String sql = "SELECT DISTINCT accion FROM bitacora ORDER BY accion";
 
-        try {
-            Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (Connection conn = DatabaseConnection.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
