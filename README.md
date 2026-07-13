@@ -51,7 +51,7 @@ El rol **RECEPCIONISTA** tiene acceso restringido: no ve ganancias, reportes, me
 
 La app avisa al dueño por WhatsApp cuando hay membresías por vencer (3 días de anticipación) o vencidas. Usa la API gratuita de [CallMeBot](https://www.callmebot.com/blog/free-api-whatsapp-messages/):
 
-1. Agrega el número **+34 644 59 21 91** a tus contactos de WhatsApp.
+1. Agrega el número **+34 684 73 40 44** a tus contactos de WhatsApp.
 2. Envíale el mensaje: `allow_callmebot`
 3. Te responderá con tu **apikey**.
 4. En la app: **Notificaciones → Configuración** → registra tu número y la apikey.
