@@ -186,7 +186,11 @@ public class ProductosController {
 
         Optional<ButtonType> resp = confirm.showAndWait();
         if (resp.isPresent() && resp.get() == ButtonType.OK) {
-            productoService.eliminar(sel.getId(), usuarioSesion.getUsuario());
+            try {
+                productoService.eliminar(sel.getId(), usuarioSesion.getUsuario());
+            } catch (Exception e) {
+                mostrarError(e.getMessage());
+            }
             cargarProductos();
         }
     }

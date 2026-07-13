@@ -113,7 +113,18 @@ public class AgregarEditarSocioController {
         } catch (IllegalArgumentException e) {
             mostrarError(e.getMessage());
         } catch (SQLException e) {
-            mostrarError("Error de base de datos: " + e.getMessage());
+            if (socioEditando == null && socio.getId() > 0) {
+                // El socio SÍ quedó guardado (falló el pago): cerrar el modal
+                // para que un reintento no lo duplique, y avisar con Alert.
+                cerrarModal();
+                Alert alerta = new Alert(Alert.AlertType.WARNING);
+                alerta.setTitle("Socio guardado con advertencia");
+                alerta.setHeaderText(null);
+                alerta.setContentText(e.getMessage());
+                alerta.showAndWait();
+            } else {
+                mostrarError("Error de base de datos: " + e.getMessage());
+            }
         }
     }
 

@@ -90,8 +90,15 @@ public class SocioService {
         return socioDAO.listar().stream()
                 .filter(s -> s.isActivo() && s.getFechaFin() != null)
                 .filter(s -> {
-                    LocalDate fin = LocalDate.parse(s.getFechaFin());
-                    return !fin.isBefore(hoy) && !fin.isAfter(limite);
+                    try {
+                        LocalDate fin = LocalDate.parse(s.getFechaFin());
+                        return !fin.isBefore(hoy) && !fin.isAfter(limite);
+                    } catch (java.time.format.DateTimeParseException e) {
+                        // Una fecha corrupta no debe tumbar el listado completo
+                        System.err.println("[SocioService] Fecha inválida en socio ID "
+                                + s.getId() + ": " + s.getFechaFin());
+                        return false;
+                    }
                 })
                 .collect(Collectors.toList());
     }
@@ -104,27 +111,24 @@ public class SocioService {
 
     /**
      * Consulta el precio de la membresía y delega en PagoService.
-     * Falla silenciosamente para no romper el flujo de alta si hay error de pago.
+     * Si el pago no se puede registrar, lanza SQLException: el fallo debe
+     * llegar a la UI (antes se perdía en consola y los reportes de
+     * ganancias quedaban incompletos sin que nadie lo notara).
      */
-    private void registrarPagoAutomatico(int socioId, int tipoMembresiaId) {
+    private void registrarPagoAutomatico(int socioId, int tipoMembresiaId) throws SQLException {
         if (socioId <= 0) {
-            System.err.println("[SocioService] ID de socio inválido tras guardar; pago omitido.");
-            return;
+            throw new SQLException("El socio se guardó pero no se obtuvo su ID; " +
+                    "el pago no fue registrado.");
         }
+        Membresia m = membresiaDAO.buscarPorId(tipoMembresiaId)
+                .orElseThrow(() -> new SQLException(
+                        "El socio se guardó, pero la membresía (ID " + tipoMembresiaId +
+                                ") no existe; el pago no fue registrado."));
         try {
-            membresiaDAO.listar().stream()
-                    .filter(m -> m.getId() == tipoMembresiaId)
-                    .findFirst()
-                    .ifPresent(m -> {
-                        try {
-                            PagoService.getInstance().registrarPago(
-                                    socioId, m.getPrecio(), m.getId());
-                        } catch (SQLException e) {
-                            System.err.println("[SocioService] Error al registrar pago: " + e.getMessage());
-                        }
-                    });
+            PagoService.getInstance().registrarPago(socioId, m.getPrecio(), m.getId());
         } catch (SQLException e) {
-            System.err.println("[SocioService] Error al consultar membresía para pago: " + e.getMessage());
+            throw new SQLException("El socio se guardó, pero el pago no se pudo registrar. " +
+                    "Regístralo renovando su membresía. Detalle: " + e.getMessage(), e);
         }
     }
 

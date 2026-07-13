@@ -61,9 +61,20 @@ public class ProductoService {
                 "Producto ID " + producto.getId() + " → " + producto.getNombre());
     }
 
-    /** Elimina permanentemente un producto del inventario. */
-    public void eliminar(int id, String realizadoPor) {
-        productoDAO.eliminar(id);
+    /**
+     * Elimina permanentemente un producto del inventario.
+     * @throws Exception si el producto tiene ventas registradas (FK) o falla la BD.
+     */
+    public void eliminar(int id, String realizadoPor) throws Exception {
+        try {
+            productoDAO.eliminar(id);
+        } catch (java.sql.SQLException e) {
+            if (e.getMessage() != null && e.getMessage().contains("FOREIGN KEY")) {
+                throw new Exception("No se puede eliminar: el producto tiene ventas registradas. " +
+                        "Puedes dejarlo con stock 0 para que no se venda más.");
+            }
+            throw e;
+        }
         bitacora.registrar(realizadoPor, "ELIMINAR_PRODUCTO", "Producto ID " + id);
     }
 

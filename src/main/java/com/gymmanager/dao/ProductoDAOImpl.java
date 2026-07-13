@@ -44,7 +44,7 @@ public class ProductoDAOImpl implements ProductoDAO {
     }
 
     @Override
-    public void guardar(Producto p) {
+    public void guardar(Producto p) throws SQLException {
         String sql = "INSERT INTO productos (nombre, precio, stock, stock_minimo, categoria) "
                 + "VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -54,13 +54,11 @@ public class ProductoDAOImpl implements ProductoDAO {
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) p.setId(keys.getInt(1));
             }
-        } catch (SQLException e) {
-            System.err.println("[ProductoDAOImpl] Error al guardar producto: " + e.getMessage());
         }
     }
 
     @Override
-    public void actualizar(Producto p) {
+    public void actualizar(Producto p) throws SQLException {
         String sql = "UPDATE productos SET nombre=?, precio=?, stock=?, stock_minimo=?, "
                 + "categoria=? WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -68,20 +66,16 @@ public class ProductoDAOImpl implements ProductoDAO {
             bindParams(ps, p);
             ps.setInt(6, p.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("[ProductoDAOImpl] Error al actualizar producto: " + e.getMessage());
         }
     }
 
     @Override
-    public void eliminar(int id) {
+    public void eliminar(int id) throws SQLException {
         String sql = "DELETE FROM productos WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("[ProductoDAOImpl] Error al eliminar producto: " + e.getMessage());
         }
     }
 

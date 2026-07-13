@@ -3,6 +3,7 @@ package com.gymmanager.utils;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Utilidades de fecha y hora para uso en toda la aplicación.
@@ -43,29 +44,41 @@ public class FechaUtils {
     /** Convierte de formato BD (yyyy-MM-dd) a formato de pantalla (dd/MM/yyyy) */
     public static String aFormatoDisplay(String fechaISO) {
         if (fechaISO == null || fechaISO.isBlank()) return "—";
-        return LocalDate.parse(fechaISO, FMT_ISO).format(FMT_DISPLAY);
+        try {
+            return LocalDate.parse(fechaISO, FMT_ISO).format(FMT_DISPLAY);
+        } catch (DateTimeParseException e) {
+            return fechaISO; // mostrar el dato crudo antes que reventar la vista
+        }
     }
 
     /**
      * Verifica si una membresía ya venció.
      *
      * @param fechaFinISO Fecha de vencimiento en formato yyyy-MM-dd
-     * @return true si la fecha ya pasó o si es null/vacía
+     * @return true si la fecha ya pasó, o si es null/vacía/ilegible
      */
     public static boolean estaVencida(String fechaFinISO) {
         if (fechaFinISO == null || fechaFinISO.isBlank()) return true;
-        return LocalDate.parse(fechaFinISO, FMT_ISO).isBefore(LocalDate.now());
+        try {
+            return LocalDate.parse(fechaFinISO, FMT_ISO).isBefore(LocalDate.now());
+        } catch (DateTimeParseException e) {
+            return true; // fecha corrupta = tratar como vencida, no tumbar el listado
+        }
     }
 
     /**
      * Días restantes hasta el vencimiento de la membresía.
-     * Retorna 0 si ya venció.
+     * Retorna 0 si ya venció o la fecha es ilegible.
      */
     public static long diasRestantes(String fechaFinISO) {
         if (fechaFinISO == null || fechaFinISO.isBlank()) return 0;
-        LocalDate fin = LocalDate.parse(fechaFinISO, FMT_ISO);
-        long diff = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), fin);
-        return Math.max(0, diff);
+        try {
+            LocalDate fin = LocalDate.parse(fechaFinISO, FMT_ISO);
+            long diff = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), fin);
+            return Math.max(0, diff);
+        } catch (DateTimeParseException e) {
+            return 0;
+        }
     }
 
     /**
