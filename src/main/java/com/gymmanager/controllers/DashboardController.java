@@ -1,6 +1,8 @@
 package com.gymmanager.controllers;
 
 import com.gymmanager.models.Usuario;
+import com.gymmanager.services.AuthService;
+import com.gymmanager.services.BitacoraService;
 import com.gymmanager.services.NotificacionService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -240,6 +242,12 @@ public class DashboardController {
 
     @FXML
     private void cerrarSesion() {
+        // Registrar el cierre y limpiar la sesión en memoria
+        if (usuarioActual != null) {
+            BitacoraService.getInstance().registrar(
+                    usuarioActual.getUsuario(), "LOGOUT", "Sesión cerrada");
+        }
+        AuthService.getInstance().cerrarSesion();
         try {
             Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(

@@ -77,7 +77,6 @@ public class NotificacionService {
             if (!porVencer.isEmpty()) {
                 resumen.append("\n⏰ *Por vencer (próximos 3 días):*\n");
                 for (Socio socio : porVencer) {
-                    notificarSocio(socio, "VENCIMIENTO");
                     resumen.append(String.format("• %s — vence: %s%n",
                             socio.getNombre(), socio.getFechaFin()));
                 }
@@ -86,13 +85,17 @@ public class NotificacionService {
             if (!vencidos.isEmpty()) {
                 resumen.append("\n🔴 *Ya vencidos:*\n");
                 for (Socio socio : vencidos) {
-                    notificarSocio(socio, "VENCIDO");
                     resumen.append(String.format("• %s — venció: %s%n",
                             socio.getNombre(), socio.getFechaFin()));
                 }
             }
 
-            notificarDueno(resumen.toString());
+            // Primero se envía el resumen al dueño; las filas por socio heredan
+            // el estado REAL del envío (antes decían ENVIADO aunque no saliera nada)
+            String estadoEnvio = notificarDueno(resumen.toString());
+
+            for (Socio socio : porVencer) registrarSocio(socio, "VENCIMIENTO", estadoEnvio);
+            for (Socio socio : vencidos)  registrarSocio(socio, "VENCIDO",     estadoEnvio);
 
         } catch (Exception e) {
             System.err.println("[NotificacionService] Error inesperado: " + e.getMessage());
@@ -109,14 +112,16 @@ public class NotificacionService {
     // ── Lógica interna ────────────────────────────────────────────────────────
 
     /**
-     * Devuelve los IDs de socios que ya tienen una notificación registrada hoy.
-     * Usa listarRecientes(1) para no agregar métodos al DAO.
+     * Devuelve los IDs de socios que ya fueron reportados con éxito hoy.
+     * Solo cuentan las filas ENVIADO: si el resumen al dueño falló,
+     * la siguiente verificación vuelve a incluir a esos socios.
      */
     private Set<Integer> obtenerYaNotificadosHoy() {
         String hoy = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         try {
             return notificacionDAO.listarRecientes(1).stream()
                     .filter(n -> n.getSocioId() > 0)               // excluir resúmenes del dueño
+                    .filter(n -> "ENVIADO".equals(n.getEstado()))  // fallidos se reintentan
                     .filter(n -> n.getFechaEnvio() != null
                             && n.getFechaEnvio().startsWith(hoy)) // solo notificaciones de hoy
                     .map(Notificacion::getSocioId)
@@ -127,22 +132,25 @@ public class NotificacionService {
         }
     }
 
-    /** Registra el socio en BD sin enviarle WhatsApp directamente. */
-    private ResultadoEnvio notificarSocio(Socio socio, String tipo) {
+    /**
+     * Deja constancia de que el socio fue incluido en el resumen al dueño.
+     * A los socios nunca se les envía WhatsApp (decisión de negocio);
+     * el estado refleja si el resumen al dueño salió o no.
+     */
+    private void registrarSocio(Socio socio, String tipo, String estado) {
         String mensaje = String.format(
-                "🏋️ *Gen Fit* — Hola %s, tu membresía vence el %s. " +
-                        "Pásate a renovarla para no perder tu acceso. ¡Te esperamos!",
+                "%s — membresía vence el %s. Incluido en el resumen al dueño.",
                 socio.getNombre(), socio.getFechaFin());
-
-        // Solo se registra en BD; el aviso real va al dueño vía notificarDueno()
         Notificacion registro = crearRegistro(socio.getId(), tipo, mensaje);
-        registro.setEstado("ENVIADO");
+        registro.setEstado(estado);
         guardarSilencioso(registro);
-        return ResultadoEnvio.ENVIADO;
     }
 
-    /** Envía el resumen al dueño y lo registra. socio_id = 0 → sistema. */
-    private void notificarDueno(String mensaje) {
+    /**
+     * Envía el resumen al dueño y lo registra. socio_id = 0 → sistema.
+     * @return el estado resultante: "ENVIADO" o "ERROR"
+     */
+    private String notificarDueno(String mensaje) {
         Notificacion registro = crearRegistro(0, "RESUMEN_DUENO", mensaje);
         try {
             whatsApp.enviarAlDueno(mensaje);
@@ -153,6 +161,7 @@ public class NotificacionService {
             System.err.println("[NotificacionService] No se pudo notificar al dueño: " + e.getMessage());
         }
         guardarSilencioso(registro);
+        return registro.getEstado();
     }
 
     private Notificacion crearRegistro(int socioId, String tipo, String mensaje) {
@@ -171,6 +180,4 @@ public class NotificacionService {
             System.err.println("[NotificacionService] Error al guardar en BD: " + e.getMessage());
         }
     }
-
-    private enum ResultadoEnvio { ENVIADO, ERROR, SIN_WHATSAPP }
 }
