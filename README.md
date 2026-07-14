@@ -41,6 +41,7 @@ El instalador:
 | 📈 **Reportes** | Ganancias por membresías y ventas, desglose por mes |
 | 👤 **Empleados** | Gestión de cuentas de recepcionistas (solo ADMIN) |
 | 📱 **Notificaciones** | Aviso diario por WhatsApp al dueño con los socios por vencer y vencidos |
+| 💾 **Respaldos** | Copia diaria automática de la base de datos al abrir la app, con carpeta secundaria opcional (Google Drive / OneDrive) y respaldo manual |
 | 📋 **Bitácora** | Registro auditable de todas las acciones del sistema |
 
 El rol **RECEPCIONISTA** tiene acceso restringido: no ve ganancias, reportes, membresías, empleados, bitácora ni notificaciones.
@@ -92,12 +93,14 @@ src/main/java/com/gymmanager/
 ├── services/     Lógica de negocio (Singleton)
 ├── dao/          Acceso a datos (interfaz + implementación SQLite)
 ├── models/       Entidades del dominio
-├── database/     Conexión Singleton e inicializador de esquema
+├── database/     Fábrica de conexiones (una por operación) e inicializador de esquema
 ├── security/     Hashing BCrypt
 └── utils/        Utilidades de fechas
 ```
 
 Los datos se guardan en `~/.gymmanager/gymmanager.db`. La base de datos y las tablas se crean automáticamente en el primer arranque.
+
+Cada vez que se abre la app se genera un respaldo diario en `~/.gymmanager/backups` (se conservan los últimos 30). En **Notificaciones → Respaldos** puedes elegir una carpeta secundaria — por ejemplo tu carpeta de Google Drive u OneDrive de escritorio — para que cada respaldo también se copie ahí, y hacer respaldos manuales con **Respaldar ahora**.
 
 ---
 
@@ -107,4 +110,4 @@ Los datos se guardan en `~/.gymmanager/gymmanager.db`. La base de datos y las ta
 |---|---|---|
 | `Omar` | `Admin123*` | ADMIN |
 
-> ⚠️ Cambia la contraseña del administrador después del primer inicio de sesión.
+> 🔒 Al entrar con la contraseña por defecto, la app **te pedirá definir una contraseña nueva** (mínimo 8 caracteres) antes de continuar. No es un error: es una medida de seguridad, ya que esta contraseña es pública.
