@@ -1,6 +1,7 @@
 package com.gymmanager.controllers;
 
 import com.gymmanager.models.Notificacion;
+import com.gymmanager.services.BackupService;
 import com.gymmanager.services.NotificacionService;
 import com.gymmanager.services.WhatsAppException;
 import com.gymmanager.services.WhatsAppService;
@@ -9,7 +10,9 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.DirectoryChooser;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -24,6 +27,11 @@ public class NotificacionesController {
     @FXML private TextField txtNumeroDueno;
     @FXML private TextField txtApiKey;
     @FXML private Label     lblEstadoConfig;
+
+    // ── Respaldos ─────────────────────────────────────────────────────────────
+    @FXML private Label     lblCarpetaLocal;
+    @FXML private TextField txtCarpetaSecundaria;
+    @FXML private Label     lblEstadoRespaldo;
 
     // ── Historial ─────────────────────────────────────────────────────────────
     @FXML private TableView<Notificacion>           tablaHistorial;
@@ -41,7 +49,62 @@ public class NotificacionesController {
     public void initialize() {
         configurarTabla();
         cargarConfiguracionEnCampos();
+        cargarConfiguracionRespaldos();
         cargarHistorial();
+    }
+
+    // ── Respaldos ─────────────────────────────────────────────────────────────
+
+    private void cargarConfiguracionRespaldos() {
+        BackupService backup = BackupService.getInstance();
+        lblCarpetaLocal.setText("Respaldo diario automático en: " + backup.getCarpetaLocal());
+        backup.obtenerCarpetaSecundaria().ifPresent(txtCarpetaSecundaria::setText);
+    }
+
+    @FXML
+    private void elegirCarpetaRespaldo() {
+        DirectoryChooser selector = new DirectoryChooser();
+        selector.setTitle("Elegir carpeta secundaria de respaldo");
+        File carpeta = selector.showDialog(txtCarpetaSecundaria.getScene().getWindow());
+        if (carpeta == null) return;
+
+        boolean ok = BackupService.getInstance().guardarCarpetaSecundaria(carpeta.getAbsolutePath());
+        txtCarpetaSecundaria.setText(ok ? carpeta.getAbsolutePath() : "");
+        setEstadoRespaldo(ok
+                ? "✅  Carpeta guardada. Los respaldos también se copiarán ahí."
+                : "❌  No se pudo guardar la carpeta.", ok);
+    }
+
+    @FXML
+    private void quitarCarpetaRespaldo() {
+        boolean ok = BackupService.getInstance().guardarCarpetaSecundaria("");
+        if (ok) txtCarpetaSecundaria.clear();
+        setEstadoRespaldo(ok
+                ? "Carpeta secundaria eliminada; solo respaldo local."
+                : "❌  No se pudo actualizar la configuración.", ok);
+    }
+
+    /** Respaldo manual en hilo de fondo para no congelar la UI. */
+    @FXML
+    private void respaldarAhora() {
+        setEstadoRespaldo("⏳  Creando respaldo...", true);
+        Thread t = new Thread(() -> {
+            try {
+                var ruta = BackupService.getInstance().respaldarAhora();
+                Platform.runLater(() ->
+                        setEstadoRespaldo("✅  Respaldo creado: " + ruta, true));
+            } catch (Exception e) {
+                Platform.runLater(() ->
+                        setEstadoRespaldo("❌  " + e.getMessage(), false));
+            }
+        }, "hilo-respaldo-manual");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void setEstadoRespaldo(String mensaje, boolean exito) {
+        lblEstadoRespaldo.setText(mensaje);
+        lblEstadoRespaldo.setStyle(exito ? "-fx-text-fill: #2e7d32;" : "-fx-text-fill: #c62828;");
     }
 
     // ── Configuración ─────────────────────────────────────────────────────────

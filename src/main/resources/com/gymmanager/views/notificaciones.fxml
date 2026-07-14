@@ -53,6 +53,43 @@
 
     </VBox>
 
+    <!-- ── Respaldos de la base de datos ──────────────────────────────────── -->
+    <VBox styleClass="card-panel" spacing="14">
+
+        <Label text="Respaldos de la base de datos" styleClass="subtitulo"/>
+
+        <Label fx:id="lblCarpetaLocal" styleClass="texto-secundario"/>
+
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="170" prefWidth="170"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="420"/>
+            </columnConstraints>
+
+            <Label text="Carpeta secundaria:"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"
+                   styleClass="form-label"/>
+            <TextField fx:id="txtCarpetaSecundaria" editable="false"
+                       GridPane.columnIndex="1" GridPane.rowIndex="0"
+                       promptText="Opcional: carpeta sincronizada (Google Drive, OneDrive…)"/>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="📁  Elegir carpeta…"
+                    onAction="#elegirCarpetaRespaldo"
+                    styleClass="btn-secundario"/>
+            <Button text="✖  Quitar"
+                    onAction="#quitarCarpetaRespaldo"
+                    styleClass="btn-secundario"/>
+            <Button text="💾  Respaldar ahora"
+                    onAction="#respaldarAhora"
+                    styleClass="btn-primario"/>
+        </HBox>
+
+        <Label fx:id="lblEstadoRespaldo" text=" "/>
+
+    </VBox>
+
     <!-- ── Historial de notificaciones ────────────────────────────────────── -->
     <VBox styleClass="card-panel" spacing="10" VBox.vgrow="ALWAYS">
 

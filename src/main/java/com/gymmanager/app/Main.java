@@ -2,6 +2,7 @@ package com.gymmanager.app;
 
 import com.gymmanager.controllers.LoginController;
 import com.gymmanager.database.DatabaseInitializer;
+import com.gymmanager.services.BackupService;
 import com.gymmanager.services.NotificacionService;
 import com.gymmanager.utils.Iconos;
 import javafx.application.Application;
@@ -25,6 +26,14 @@ public class Main extends Application {
     public void init() {
         // Crea tablas y datos semilla si no existen
         DatabaseInitializer.inicializar();
+
+        // Respaldo diario (deduplicado por fecha). Hilo NO daemon a propósito:
+        // si el usuario cierra la app enseguida, la JVM espera a que el
+        // respaldo (<1 s) termine en vez de dejarlo a medias.
+        new Thread(
+                () -> BackupService.getInstance().respaldarSiTocaHoy(),
+                "respaldo-diario"
+        ).start();
 
         // Verifica vencimientos al iniciar; falla silenciosamente si no hay red/config
         Thread t = new Thread(
