@@ -24,7 +24,7 @@ public class AuthService {
         this.usuarioDAO = new UsuarioDAOImpl();
     }
 
-    public static AuthService getInstance() {
+    public static synchronized AuthService getInstance() {
         if (instancia == null) {
             instancia = new AuthService();
         }

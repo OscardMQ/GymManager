@@ -22,7 +22,7 @@ public class ReporteService {
 
     private ReporteService() {}
 
-    public static ReporteService getInstance() {
+    public static synchronized ReporteService getInstance() {
         if (instancia == null) {
             instancia = new ReporteService();
         }

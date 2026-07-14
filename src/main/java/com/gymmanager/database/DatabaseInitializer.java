@@ -145,6 +145,14 @@ public class DatabaseInitializer {
         FOREIGN KEY (producto_id) REFERENCES productos(id)
     )
 """);
+
+        // ── Índices para las consultas frecuentes (listados y reportes) ──
+        stmt.execute("CREATE INDEX IF NOT EXISTS idx_socios_fecha_fin      ON socios(fecha_fin)");
+        stmt.execute("CREATE INDEX IF NOT EXISTS idx_pagos_fecha           ON pagos(fecha)");
+        stmt.execute("CREATE INDEX IF NOT EXISTS idx_ventas_fecha          ON ventas(fecha)");
+        stmt.execute("CREATE INDEX IF NOT EXISTS idx_detalle_ventas_venta  ON detalle_ventas(venta_id)");
+        stmt.execute("CREATE INDEX IF NOT EXISTS idx_notificaciones_fecha  ON notificaciones(fecha_envio)");
+        stmt.execute("CREATE INDEX IF NOT EXISTS idx_bitacora_fecha        ON bitacora(fecha, hora)");
     }
 
     private static void insertarDatosSemilla(Connection conn) throws SQLException {

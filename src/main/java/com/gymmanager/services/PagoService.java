@@ -21,7 +21,7 @@ public class PagoService {
         this.pagoDAO = new PagoDAOImpl();
     }
 
-    public static PagoService getInstance() {
+    public static synchronized PagoService getInstance() {
         if (instancia == null) instancia = new PagoService();
         return instancia;
     }

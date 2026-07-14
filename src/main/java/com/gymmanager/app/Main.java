@@ -49,6 +49,8 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/gymmanager/views/login.fxml"));
         Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(
+                getClass().getResource("/com/gymmanager/css/estilos.css").toExternalForm());
 
         primaryStage.setTitle("GymManager — Gen Fit");
         Iconos.aplicar(primaryStage);

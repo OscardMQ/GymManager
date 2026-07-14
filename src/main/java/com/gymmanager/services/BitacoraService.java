@@ -22,7 +22,7 @@ public class BitacoraService {
 
     private BitacoraService() {}
 
-    public static BitacoraService getInstance() {
+    public static synchronized BitacoraService getInstance() {
         if (instancia == null) {
             instancia = new BitacoraService();
         }

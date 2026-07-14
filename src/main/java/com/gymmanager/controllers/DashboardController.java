@@ -62,8 +62,8 @@ public class DashboardController {
         setVisibilidadBoton(btnMenuNotificaciones, esAdmin); // Fase 5
         setVisibilidadBoton(btnMenuEmpleados, esAdmin);      // Fase 6
         setVisibilidadBoton(btnMenuReportes, esAdmin);
-        setVisibilidadBoton(btnMenuProductos, esAdmin);
-
+        // Productos es visible para AMBOS roles: ProductosController oculta
+        // el botón Eliminar cuando el usuario es RECEPCIONISTA
     }
 
     private void setVisibilidadBoton(Button btn, boolean visible) {
@@ -252,7 +252,10 @@ public class DashboardController {
             Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/gymmanager/views/login.fxml"));
-            stage.setScene(new Scene(loader.load()));
+            Scene escena = new Scene(loader.load());
+            escena.getStylesheets().add(
+                    getClass().getResource("/com/gymmanager/css/estilos.css").toExternalForm());
+            stage.setScene(escena);
             stage.centerOnScreen();
         } catch (IOException e) {
             System.err.println("[DashboardController] Error al cerrar sesión: " + e.getMessage());

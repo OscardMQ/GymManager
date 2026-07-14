@@ -28,7 +28,7 @@ public class SocioService {
         this.membresiaDAO = new MembresiaDAOImpl();
     }
 
-    public static SocioService getInstance() {
+    public static synchronized SocioService getInstance() {
         if (instancia == null) instancia = new SocioService();
         return instancia;
     }
