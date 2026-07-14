@@ -65,6 +65,10 @@
                 maxWidth="Infinity"
                 onAction="#handleLogin"/>
 
-        <Label text="GymManager v1.0 © 2026" styleClass="version-etiqueta"/>
+        <Hyperlink text="¿Olvidaste tu contraseña?"
+                   styleClass="login-enlace"
+                   onAction="#handleRecuperar"/>
+
+        <Label text="GymManager v1.1.1 © 2026" styleClass="version-etiqueta"/>
     </VBox>
 </StackPane>

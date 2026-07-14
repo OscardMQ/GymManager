@@ -65,6 +65,11 @@ public class AuthService {
         usuarioDAO.actualizarContrasena(usuarioId, PasswordHasher.hashear(nuevaContrasena));
     }
 
+    /** Cuentas con rol ADMIN. Usada por la recuperación de contraseña. */
+    public java.util.List<Usuario> listarAdministradores() {
+        return usuarioDAO.listarPorRol(Usuario.Rol.ADMIN);
+    }
+
     /** Usuario con sesión activa. Null si nadie está logueado. */
     public Usuario getUsuarioActual() {
         return usuarioActual;

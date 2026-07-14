@@ -4,6 +4,7 @@ import com.gymmanager.models.LoginRequest;
 import com.gymmanager.models.Usuario;
 import com.gymmanager.services.AuthService;
 import com.gymmanager.services.BitacoraService;
+import com.gymmanager.services.RecuperacionService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -20,7 +22,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -181,6 +185,94 @@ public class LoginController {
     }
 
     /**
+     * Recuperación de contraseña del administrador (sin puerta trasera).
+     * Escribe un código en un archivo de la carpeta de datos local; solo
+     * quien tiene acceso físico a la computadora puede leerlo y completar
+     * el reseteo. El código nunca se muestra en pantalla.
+     */
+    @FXML
+    private void handleRecuperar() {
+        limpiarError();
+
+        List<Usuario> admins = authService.listarAdministradores();
+        if (admins.isEmpty()) {
+            mostrarError("No hay cuentas de administrador para recuperar.");
+            return;
+        }
+
+        Path archivo;
+        try {
+            archivo = RecuperacionService.getInstance().generarCodigo();
+        } catch (IOException e) {
+            mostrarError("No se pudo iniciar la recuperación: " + e.getMessage());
+            return;
+        }
+
+        ComboBox<String> comboAdmin = new ComboBox<>();
+        admins.forEach(u -> comboAdmin.getItems().add(u.getUsuario()));
+        comboAdmin.getSelectionModel().selectFirst();
+
+        TextField     campoCodigo = new TextField();
+        PasswordField nueva       = new PasswordField();
+        PasswordField confirma    = new PasswordField();
+        campoCodigo.setPromptText("Código del archivo");
+        nueva.setPromptText("Nueva contraseña (mínimo 8 caracteres)");
+        confirma.setPromptText("Confirmar contraseña");
+
+        Dialog<ButtonType> dialogo = new Dialog<>();
+        dialogo.setTitle("Recuperar contraseña");
+        dialogo.setHeaderText(
+                "Se escribió un código en el archivo:\n" + archivo + "\n\n"
+                + "Ábrelo en esa computadora, copia el código y escríbelo aquí "
+                + "para establecer una contraseña nueva.");
+
+        VBox caja = new VBox(10,
+                new Label("Administrador:"), comboAdmin,
+                new Label("Código de recuperación:"), campoCodigo,
+                new Label("Nueva contraseña:"), nueva, confirma);
+        caja.setPadding(new Insets(10));
+        dialogo.getDialogPane().setContent(caja);
+        dialogo.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        while (true) {
+            Optional<ButtonType> res = dialogo.showAndWait();
+            if (res.isEmpty() || res.get() != ButtonType.OK) {
+                return; // el usuario canceló; el código en memoria expira solo
+            }
+
+            String pass  = nueva.getText();
+            String error = null;
+            if (!RecuperacionService.getInstance().validar(campoCodigo.getText()))
+                error = "Código incorrecto o expirado (válido 10 minutos).";
+            else if (pass.length() < 8)
+                error = "La contraseña debe tener al menos 8 caracteres.";
+            else if (!pass.equals(confirma.getText()))
+                error = "Las contraseñas no coinciden.";
+
+            if (error == null) {
+                String nombreAdmin = comboAdmin.getValue();
+                Usuario admin = admins.stream()
+                        .filter(u -> u.getUsuario().equals(nombreAdmin))
+                        .findFirst().orElseThrow();
+                try {
+                    authService.cambiarContrasena(admin.getId(), pass);
+                    RecuperacionService.getInstance().limpiar();
+                    bitacoraService.registrar(nombreAdmin, "RECUPERAR_CONTRASENA",
+                            "Contraseña restablecida mediante código local");
+                    campoUsuario.setText(nombreAdmin);
+                    campoContrasena.clear();
+                    campoContrasena.requestFocus();
+                    mostrarExito("Contraseña restablecida. Ingresa con la nueva contraseña.");
+                    return;
+                } catch (SQLException e) {
+                    error = "Error de base de datos: " + e.getMessage();
+                }
+            }
+            dialogo.setHeaderText(error + "\nIntenta de nuevo.\n\nArchivo: " + archivo);
+        }
+    }
+
+    /**
      * Carga el dashboard y pasa el usuario al controlador.
      * El tamaño y título del Stage cambian aquí.
      */
@@ -208,11 +300,21 @@ public class LoginController {
 
     private void mostrarError(String mensaje) {
         etiquetaError.setText(mensaje);
+        etiquetaError.setStyle("");
+        etiquetaError.setVisible(true);
+        etiquetaError.setManaged(true);
+    }
+
+    /** Reutiliza la etiqueta de error pero en verde para confirmaciones. */
+    private void mostrarExito(String mensaje) {
+        etiquetaError.setText(mensaje);
+        etiquetaError.setStyle("-fx-text-fill: #2e7d32;");
         etiquetaError.setVisible(true);
         etiquetaError.setManaged(true);
     }
 
     private void limpiarError() {
+        etiquetaError.setStyle("");
         etiquetaError.setVisible(false);
         etiquetaError.setManaged(false);
     }

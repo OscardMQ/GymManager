@@ -104,6 +104,19 @@
     -fx-cursor: default;
 }
 
+/* Enlace "¿Olvidaste tu contraseña?" */
+.login-enlace {
+    -fx-text-fill: #8a8fb0;
+    -fx-font-size: 12px;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+}
+
+.login-enlace:hover {
+    -fx-text-fill: #ff6b35;
+    -fx-underline: true;
+}
+
 /* Versión al pie */
 .version-etiqueta {
     -fx-text-fill: #3d4060;
