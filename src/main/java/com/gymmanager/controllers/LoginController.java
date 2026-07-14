@@ -4,24 +4,45 @@ import com.gymmanager.models.LoginRequest;
 import com.gymmanager.models.Usuario;
 import com.gymmanager.services.AuthService;
 import com.gymmanager.services.BitacoraService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 /**
  * Controlador del formulario de login.
  * Coordina validación, autenticación y navegación al dashboard.
+ *
+ * Seguridad:
+ *  - La verificación BCrypt corre en un hilo de fondo (no congela la UI).
+ *  - 5 intentos fallidos seguidos bloquean el login por 30 segundos.
+ *  - Entrar con la contraseña por defecto obliga a cambiarla antes de continuar.
  */
 public class LoginController {
+
+    /** Contraseña de la semilla inicial; entrar con ella exige cambiarla. */
+    private static final String CONTRASENA_DEFAULT = "Admin123*";
+
+    private static final int  MAX_INTENTOS       = 5;
+    private static final long BLOQUEO_MILIS      = 30_000;
+
+    // static: sobreviven al recargar la vista (logout → login)
+    private static int  intentosFallidos = 0;
+    private static long bloqueadoHasta   = 0;
 
     @FXML private TextField     campoUsuario;
     @FXML private PasswordField campoContrasena;
@@ -53,6 +74,13 @@ public class LoginController {
 
         limpiarError();
 
+        long restante = bloqueadoHasta - System.currentTimeMillis();
+        if (restante > 0) {
+            mostrarError("Demasiados intentos fallidos. Espera "
+                    + (restante / 1000 + 1) + " segundos.");
+            return;
+        }
+
         if (usuario.isEmpty() || contrasena.isEmpty()) {
             mostrarError("Por favor, ingresa usuario y contraseña.");
             return;
@@ -60,27 +88,95 @@ public class LoginController {
 
         botonIngresar.setDisable(true);
 
-        try {
-            Optional<Usuario> resultado = authService.autenticar(new LoginRequest(usuario, contrasena));
+        // BCrypt tarda ~300 ms: verificar en hilo de fondo para no congelar la UI
+        Thread t = new Thread(() -> {
+            Optional<Usuario> resultado =
+                    authService.autenticar(new LoginRequest(usuario, contrasena));
+            Platform.runLater(() -> procesarResultado(usuario, contrasena, resultado));
+        }, "hilo-login");
+        t.setDaemon(true);
+        t.start();
+    }
 
-            if (resultado.isEmpty()) {
-                bitacoraService.registrar(usuario, "LOGIN_FALLIDO",
-                        "Credenciales inválidas para: " + usuario);
+    /** Corre en el hilo de JavaFX una vez verificadas las credenciales. */
+    private void procesarResultado(String usuario, String contrasena,
+                                   Optional<Usuario> resultado) {
+        botonIngresar.setDisable(false);
+
+        if (resultado.isEmpty()) {
+            intentosFallidos++;
+            bitacoraService.registrar(usuario, "LOGIN_FALLIDO",
+                    "Credenciales inválidas para: " + usuario);
+            if (intentosFallidos >= MAX_INTENTOS) {
+                bloqueadoHasta   = System.currentTimeMillis() + BLOQUEO_MILIS;
+                intentosFallidos = 0;
+                mostrarError("Demasiados intentos fallidos. Espera 30 segundos.");
+            } else {
                 mostrarError("Usuario o contraseña incorrectos.");
+            }
+            campoContrasena.clear();
+            campoContrasena.requestFocus();
+            return;
+        }
+
+        intentosFallidos = 0;
+        Usuario autenticado = resultado.get();
+
+        // Contraseña por defecto (pública en el repositorio): forzar cambio
+        if (CONTRASENA_DEFAULT.equals(contrasena)) {
+            if (!forzarCambioContrasena(autenticado)) {
+                authService.cerrarSesion();
+                mostrarError("Debes establecer una contraseña nueva para entrar.");
                 campoContrasena.clear();
-                campoContrasena.requestFocus();
                 return;
             }
+        }
 
-            Usuario autenticado = resultado.get();
-            bitacoraService.registrar(usuario, "LOGIN",
-                    "Sesión iniciada — Rol: " + autenticado.getRol());
+        bitacoraService.registrar(usuario, "LOGIN",
+                "Sesión iniciada — Rol: " + autenticado.getRol());
+        abrirDashboard(autenticado);
+    }
 
-            abrirDashboard(autenticado);
+    /**
+     * Diálogo modal que obliga a definir una contraseña nueva.
+     * @return true si la contraseña fue cambiada; false si el usuario canceló.
+     */
+    private boolean forzarCambioContrasena(Usuario usuario) {
+        PasswordField nueva    = new PasswordField();
+        PasswordField confirma = new PasswordField();
+        nueva.setPromptText("Nueva contraseña (mínimo 8 caracteres)");
+        confirma.setPromptText("Confirmar contraseña");
 
-        } finally {
-            // Siempre rehabilitar el botón (en caso de excepción imprevista)
-            botonIngresar.setDisable(false);
+        Dialog<ButtonType> dialogo = new Dialog<>();
+        dialogo.setTitle("Cambio de contraseña obligatorio");
+        dialogo.setHeaderText("Estás usando la contraseña por defecto.\n"
+                + "Por seguridad debes establecer una nueva antes de continuar.");
+        VBox caja = new VBox(10, nueva, confirma);
+        caja.setPadding(new Insets(10));
+        dialogo.getDialogPane().setContent(caja);
+        dialogo.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        while (true) {
+            Optional<ButtonType> res = dialogo.showAndWait();
+            if (res.isEmpty() || res.get() != ButtonType.OK) return false;
+
+            String pass  = nueva.getText();
+            String error = null;
+            if (pass.length() < 8)                       error = "Mínimo 8 caracteres.";
+            else if (!pass.equals(confirma.getText()))   error = "Las contraseñas no coinciden.";
+            else if (pass.equals(CONTRASENA_DEFAULT))    error = "No puedes reutilizar la contraseña por defecto.";
+
+            if (error == null) {
+                try {
+                    authService.cambiarContrasena(usuario.getId(), pass);
+                    bitacoraService.registrar(usuario.getUsuario(), "CAMBIO_CONTRASENA",
+                            "Contraseña por defecto reemplazada");
+                    return true;
+                } catch (SQLException e) {
+                    error = "Error de base de datos: " + e.getMessage();
+                }
+            }
+            dialogo.setHeaderText(error + "\nIntenta de nuevo.");
         }
     }
 

@@ -36,7 +36,7 @@ public class EmpleadoService {
     /**
      * Crea un nuevo empleado con rol RECEPCIONISTA.
      * Valida que el nombre de usuario sea único y que la contraseña
-     * cumpla el mínimo de 6 caracteres.
+     * cumpla el mínimo de 8 caracteres.
      *
      * @param usuario      Nombre de usuario (login).
      * @param contrasena   Contraseña en texto plano; se hashea antes de guardar.
@@ -89,8 +89,8 @@ public class EmpleadoService {
         usuarioDAO.actualizarNombreUsuario(id, nuevoUsuario.trim());
 
         if (nuevaContrasena != null && !nuevaContrasena.isBlank()) {
-            if (nuevaContrasena.length() < 6) {
-                throw new Exception("La contraseña debe tener al menos 6 caracteres.");
+            if (nuevaContrasena.length() < 8) {
+                throw new Exception("La contraseña debe tener al menos 8 caracteres.");
             }
             usuarioDAO.actualizarContrasena(id, PasswordHasher.hashear(nuevaContrasena));
         }
@@ -132,7 +132,7 @@ public class EmpleadoService {
             throw new Exception("El nombre de usuario es obligatorio.");
         if (contrasena == null || contrasena.isBlank())
             throw new Exception("La contraseña es obligatoria.");
-        if (contrasena.length() < 6)
-            throw new Exception("La contraseña debe tener al menos 6 caracteres.");
+        if (contrasena.length() < 8)
+            throw new Exception("La contraseña debe tener al menos 8 caracteres.");
     }
 }

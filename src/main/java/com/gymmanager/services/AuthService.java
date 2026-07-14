@@ -60,6 +60,11 @@ public class AuthService {
         }
     }
 
+    /** Cambia la contraseña de un usuario (se hashea aquí, nunca se guarda en claro). */
+    public void cambiarContrasena(int usuarioId, String nuevaContrasena) throws SQLException {
+        usuarioDAO.actualizarContrasena(usuarioId, PasswordHasher.hashear(nuevaContrasena));
+    }
+
     /** Usuario con sesión activa. Null si nadie está logueado. */
     public Usuario getUsuarioActual() {
         return usuarioActual;
